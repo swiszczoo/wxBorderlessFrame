@@ -10,4 +10,47 @@
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\wxbf\borderless_frame.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\borderless_frame_msw.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\borderless_frame_common.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\drop_shadow_frame_base.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\drop_shadow_frame.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\drop_shadow_frame_msw.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\window_gripper.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\window_gripper_msw.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\resizer_drop_shadow_frame.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\borderless_frame_msw.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drop_shadow_frame_base.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\drop_shadow_frame_msw.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window_gripper_msw.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
