@@ -39,6 +39,16 @@ bool wxBorderlessFrameMSW::Create(wxWindow* parent,
     return true;
 }
 
+void wxBorderlessFrameMSW::PopupSystemMenu()
+{
+    ::HMENU hSysMenu = GetSystemMenu(GetHWND(), FALSE);
+    wxPoint mousePos = wxGetMousePosition();
+    int cmd = ::TrackPopupMenu(hSysMenu, TPM_RETURNCMD,
+        mousePos.x, mousePos.y, 0, GetHWND(), NULL);
+
+    SendMessage(GetHWND(), WM_SYSCOMMAND, static_cast<WPARAM>(cmd), NULL);
+}
+
 WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
 {
     switch (message) {
@@ -65,6 +75,13 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
             }
         }
         break;
+    case WM_NCHITTEST:
+    {
+        static const int RETURN_VALUES[] = {
+            HTCLIENT, HTCAPTION, HTMINBUTTON, HTMAXBUTTON, HTCLOSE };
+
+        return RETURN_VALUES[static_cast<int>(GetWindowPart(wxGetMousePosition()))];
+    }
     case WM_NCPAINT:
     {
         wxWindowDC dc(this);
@@ -94,6 +111,11 @@ void wxBorderlessFrameMSW::Init()
     wxFrame::Init();
     m_borderThickness = 1;
     m_borderColour = *wxRED;
+}
+
+wxWindowPart wxBorderlessFrameMSW::GetWindowPart(wxPoint mousePosition) const
+{
+    return wxWindowPart::CLIENT_AREA;
 }
 
 void wxBorderlessFrameMSW::UpdateNcArea()

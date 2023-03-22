@@ -5,6 +5,14 @@
 
 #include <wx/wx.h>
 
+enum class wxWindowPart {
+    CLIENT_AREA,
+    TITLEBAR,
+    MINIMIZE_BUTTON,
+    MAXIMIZE_BUTTON,
+    CLOSE_BUTTON
+};
+
 class BFDLLEXPORT wxBorderlessFrameMSW : public wxFrame
 {
 public:
@@ -47,9 +55,14 @@ public:
         return m_borderThickness;
     }
 
+    void PopupSystemMenu();
+
     virtual WXLRESULT MSWWindowProc(WXUINT message,
         WXWPARAM wParam,
         WXLPARAM lParam) wxOVERRIDE;
+
+protected:
+    virtual wxWindowPart GetWindowPart(wxPoint mousePosition) const;
 
 private:
     wxColour m_borderColour;

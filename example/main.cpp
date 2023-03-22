@@ -22,6 +22,7 @@ private:
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    void OnKeyDown(wxKeyEvent& event);
     wxDECLARE_EVENT_TABLE();
 };
 enum
@@ -33,16 +34,19 @@ wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
 EVT_MENU(ID_Hello, MyFrame::OnHello)
 EVT_MENU(wxID_EXIT, MyFrame::OnExit)
 EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
+EVT_KEY_DOWN(MyFrame::OnKeyDown)
 wxEND_EVENT_TABLE()
 wxIMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
 {
+#ifdef _WIN32
     SetProcessDPIAware();
+#endif
 
     MyFrame* frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
-    frame->SetBorderThickness(2);
-    frame->SetBorderColour(wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT));
+    frame->SetBorderThickness(1);
+    frame->SetBorderColour(wxColour(255,0,0));
     frame->SetDoubleBuffered(true);
     frame->Show(true);
     return true;
@@ -50,17 +54,8 @@ bool MyApp::OnInit()
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxBorderlessFrame(NULL, wxID_ANY, title, pos, size)
 {
-    wxMenu* menuFile = new wxMenu;
-    menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-        "Help string shown in status bar for this menu item");
-    menuFile->AppendSeparator();
-    menuFile->Append(wxID_EXIT);
-    wxMenu* menuHelp = new wxMenu;
-    menuHelp->Append(wxID_ABOUT);
-    wxMenuBar* menuBar = new wxMenuBar;
-    menuBar->Append(menuFile, "&File");
-    menuBar->Append(menuHelp, "&Help");
-    SetMenuBar(menuBar);
+    SetBackgroundColour(wxColour(255,255,255));
+
     CreateStatusBar();
     SetStatusText("Welcome to wxWidgets!");
 
@@ -78,4 +73,13 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Hello world from wxWidgets!");
+}
+
+void MyFrame::OnKeyDown(wxKeyEvent& event)
+{
+    if (event.GetKeyCode() == WXK_F2) {
+        PopupSystemMenu();
+    }
+
+    event.Skip();
 }
