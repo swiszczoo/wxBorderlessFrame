@@ -66,10 +66,9 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
     case WM_NCCALCSIZE:
         if (wParam) {
             NCCALCSIZE_PARAMS* csp = reinterpret_cast<NCCALCSIZE_PARAMS*>(lParam);
+            int thickness = GetBorderThickness();
 
             if (!IsMaximized()) {
-                int thickness = GetBorderThickness();
-
                 csp->rgrc[0].top += thickness;
                 csp->rgrc[0].left += thickness;
                 csp->rgrc[0].right -= thickness;
@@ -153,6 +152,7 @@ void wxBorderlessFrameMSW::Init()
     wxFrame::Init();
     m_borderThickness = 1;
     m_borderColour = *wxRED;
+    m_maximizedTheme = true;
 }
 
 wxWindowPart wxBorderlessFrameMSW::GetWindowPart(wxPoint mousePosition) const

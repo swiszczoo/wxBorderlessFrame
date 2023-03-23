@@ -50,10 +50,8 @@ void wxDropShadowFrameMSW::UpdateWindowContents(wxDC& winDc, wxMemoryDC& dc)
     HDC windowHdc = winDc.GetHDC();
     HDC sourceHdc = dc.GetHDC();
 
-    BOOL result = ::UpdateLayeredWindow(GetHWND(), 
+    ::UpdateLayeredWindow(GetHWND(), 
         windowHdc, &pptDst, &psize, sourceHdc, &pnt, 0, &bf, ULW_ALPHA);
-    DWORD error = GetLastError();
-    error;
 }
 
 #endif
