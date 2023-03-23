@@ -150,7 +150,12 @@ private:
 
     void OnMouseMotion(wxMouseEvent& evnt)
     {
-        wxStockCursor current = DropShadowImpl::GetAttachedWindow() ? GetCursor(evnt.GetPosition()) : wxCURSOR_ARROW;
+        wxWindow* attached = DropShadowImpl::GetAttachedWindow();
+        wxStockCursor current = wxCURSOR_ARROW;
+
+        if (attached && (attached->GetWindowStyle() & wxRESIZE_BORDER)) {
+            current = GetCursor(evnt.GetPosition());
+        }
 
         if (current != m_lastCursor) {
             m_lastCursor = current;

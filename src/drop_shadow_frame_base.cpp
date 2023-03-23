@@ -1,5 +1,6 @@
 #include <wxbf/drop_shadow_frame_base.h>
 
+#include <wx/log.h>
 #include <wx/rawbmp.h>
 
 #define _USE_MATH_DEFINES
@@ -133,7 +134,7 @@ void wxDropShadowFrameBase::OnAttachedMove(wxMoveEvent& evnt)
 
 void wxDropShadowFrameBase::OnAttachedSize(wxSizeEvent& evnt)
 {
-    if (!IsShown()) {
+    if (!IsShown() && !m_attachedFrame->IsMaximized()) {
         Show();
     }
 

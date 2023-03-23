@@ -36,6 +36,9 @@ bool wxBorderlessFrameMSW::Create(wxWindow* parent,
         m_shadow[i]->AttachToWindow(this);
     }
 
+    Bind(wxEVT_MAXIMIZE, &wxBorderlessFrameMSW::OnMaximize, this);
+    Bind(wxEVT_SIZE, &wxBorderlessFrameMSW::OnSize, this);
+
     return true;
 }
 
@@ -43,6 +46,9 @@ void wxBorderlessFrameMSW::PopupSystemMenu()
 {
     ::HMENU hSysMenu = GetSystemMenu(GetHWND(), FALSE);
     wxPoint mousePos = wxGetMousePosition();
+
+    UpdateSystemMenu(hSysMenu);
+
     int cmd = ::TrackPopupMenu(hSysMenu, TPM_RETURNCMD,
         mousePos.x, mousePos.y, 0, GetHWND(), NULL);
 
@@ -53,14 +59,15 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
 {
     switch (message) {
     case WM_CREATE:
-        SetWindowTheme(GetHWND(), _T(""), _T(""));
+        UpdateTheme();
         break;
     case WM_NCACTIVATE:
         return TRUE;
     case WM_NCCALCSIZE:
         if (wParam) {
+            NCCALCSIZE_PARAMS* csp = reinterpret_cast<NCCALCSIZE_PARAMS*>(lParam);
+
             if (!IsMaximized()) {
-                NCCALCSIZE_PARAMS* csp = reinterpret_cast<NCCALCSIZE_PARAMS*>(lParam);
                 int thickness = GetBorderThickness();
 
                 csp->rgrc[0].top += thickness;
@@ -70,7 +77,7 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
                 return 0;
             }
             else {
-                // TODO: handle maximize case
+                AdjustMaximizedClientRect(GetHWND(), csp->rgrc[0]);
                 return 0;
             }
         }
@@ -80,10 +87,45 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
         static const int RETURN_VALUES[] = {
             HTCLIENT, HTCAPTION, HTMINBUTTON, HTMAXBUTTON, HTCLOSE };
 
-        return RETURN_VALUES[static_cast<int>(GetWindowPart(wxGetMousePosition()))];
+        wxPoint mousePos = wxGetMousePosition();
+        wxRect wndRect = GetScreenRect();
+        int thickness = GetBorderThickness();
+
+        if (!IsMaximized()) {
+            if (mousePos.x - wndRect.GetLeft() <= thickness) {
+                if (mousePos.y - wndRect.GetTop() <= thickness) {
+                    return HTTOPLEFT;
+                }
+                if (wndRect.GetBottom() - mousePos.y <= thickness) {
+                    return HTBOTTOMLEFT;
+                }
+                return HTLEFT;
+            }
+            if (wndRect.GetRight() - mousePos.x <= thickness) {
+                if (mousePos.y - wndRect.GetTop() <= thickness) {
+                    return HTTOPRIGHT;
+                }
+                if (wndRect.GetBottom() - mousePos.y <= thickness) {
+                    return HTBOTTOMRIGHT;
+                }
+                return HTRIGHT;
+            }
+            if (mousePos.y - wndRect.GetTop() <= thickness) {
+                return HTTOP;
+            }
+            if (wndRect.GetBottom() - mousePos.y <= thickness) {
+                return HTBOTTOM;
+            }
+        }
+
+        return RETURN_VALUES[static_cast<int>(GetWindowPart(mousePos))];
     }
     case WM_NCPAINT:
     {
+        if (IsMaximized()) {
+            return 0;
+        }
+
         wxWindowDC dc(this);
         if (m_borderThickness > 0) {
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
@@ -121,6 +163,67 @@ wxWindowPart wxBorderlessFrameMSW::GetWindowPart(wxPoint mousePosition) const
 void wxBorderlessFrameMSW::UpdateNcArea()
 {
     ::SetWindowPos(GetHWND(), nullptr, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+void wxBorderlessFrameMSW::UpdateSystemMenu(::HMENU sysMenu)
+{
+#define ITEM_STATE(pred) (pred) ? MF_ENABLED : MFS_GRAYED
+
+    bool maximized = IsMaximized();
+    long styles = GetWindowStyle();
+
+    ::EnableMenuItem(sysMenu, SC_RESTORE, ITEM_STATE(maximized && (styles & wxMAXIMIZE_BOX)));
+    ::EnableMenuItem(sysMenu, SC_MOVE, ITEM_STATE(!maximized));
+    ::EnableMenuItem(sysMenu, SC_SIZE, ITEM_STATE(!maximized && (styles & wxRESIZE_BORDER)));
+    ::EnableMenuItem(sysMenu, SC_MINIMIZE, ITEM_STATE(styles & wxMINIMIZE_BOX));
+    ::EnableMenuItem(sysMenu, SC_MAXIMIZE, ITEM_STATE(!maximized && (styles & wxMAXIMIZE_BOX)));
+    ::EnableMenuItem(sysMenu, SC_CLOSE, ITEM_STATE(styles & wxCLOSE_BOX));
+}
+
+void wxBorderlessFrameMSW::AdjustMaximizedClientRect(::HWND window, RECT& rect)
+{
+    ::HMONITOR monitor = ::MonitorFromWindow(window, MONITOR_DEFAULTTONULL);
+    if (!monitor) {
+        return;
+    }
+
+    ::MONITORINFO monitorInfo = {};
+    monitorInfo.cbSize = sizeof(monitorInfo);
+    if (!::GetMonitorInfo(monitor, &monitorInfo)) {
+        return;
+    }
+
+    rect = monitorInfo.rcWork;
+}
+
+void wxBorderlessFrameMSW::UpdateTheme()
+{
+    bool desiredTheme = IsMaximized();
+
+    if (desiredTheme == m_maximizedTheme) {
+        return;
+    }
+
+    if (desiredTheme) {
+        SetWindowTheme(GetHWND(), NULL, NULL);
+    }
+    else {
+        SetWindowTheme(GetHWND(), L"", L"");
+    }
+
+    m_maximizedTheme = desiredTheme;
+}
+
+void wxBorderlessFrameMSW::OnMaximize(wxMaximizeEvent& evnt)
+{
+    UpdateTheme();
+    evnt.Skip();
+}
+
+void wxBorderlessFrameMSW::OnSize(wxSizeEvent& evnt)
+{
+    UpdateTheme();
+    evnt.Skip();
 }
 
 #endif

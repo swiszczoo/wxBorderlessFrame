@@ -33,9 +33,4 @@ public:
 
 protected:
     virtual void UpdateWindowContents(wxDC& winDc, wxMemoryDC& dc) wxOVERRIDE;
-
-private:
-    virtual WXLRESULT MSWWindowProc(WXUINT message,
-        WXWPARAM wParam,
-        WXLPARAM lParam) wxOVERRIDE;
 };

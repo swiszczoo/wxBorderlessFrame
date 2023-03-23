@@ -46,7 +46,7 @@ bool MyApp::OnInit()
 
     MyFrame* frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
     frame->SetBorderThickness(1);
-    frame->SetBorderColour(wxColour(255,0,0));
+    frame->SetBorderColour(wxColour(255, 128, 0));
     frame->SetDoubleBuffered(true);
     frame->Show(true);
     return true;
@@ -54,7 +54,7 @@ bool MyApp::OnInit()
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxBorderlessFrame(NULL, wxID_ANY, title, pos, size)
 {
-    SetBackgroundColour(wxColour(255,255,255));
+    SetBackgroundColour(wxColour(255, 255, 255));
 
     CreateStatusBar();
     SetStatusText("Welcome to wxWidgets!");
