@@ -69,9 +69,16 @@ protected:
 private:
     wxColour m_borderColour;
     int m_borderThickness;
+    bool m_maximizedTheme;
 
     wxResizerDropShadowFrame<wxDropShadowFrameMSW>* m_shadow[4];
 
     void Init();
     void UpdateNcArea();
+    void UpdateSystemMenu(::HMENU sysMenu);
+    void AdjustMaximizedClientRect(::HWND window, RECT& rect);
+    void UpdateTheme();
+
+    void OnMaximize(wxMaximizeEvent& evnt);
+    void OnSize(wxSizeEvent& evnt);
 };

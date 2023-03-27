@@ -2,6 +2,8 @@
 #include "borderless_frame_common.h"
 #include <wx/wx.h>
 
+#include <chrono>
+
 enum wxDropShadowWindowPart
 {
     wxSHADOW_TOP,
@@ -53,6 +55,8 @@ public:
 
     wxDropShadowWindowPart GetPart() const { return m_part; }
 
+    virtual void StartFadeIn();
+
 protected:
     virtual void UpdateWindowContents(wxDC& winDc, wxMemoryDC& dc) = 0;
     virtual bool GetPlacementRect(wxRect& out);
@@ -72,18 +76,28 @@ protected:
     void Init();
 
 private:
+    static const double FADE_IN_TIME_MS;
+    static const double FADE_IN_DELAY_MS;
+    static const int TIMER_TICK_MS;
+
     wxDropShadowWindowPart m_part;
     wxVector<double> m_gaussianCoeffs;
     wxVector<double> m_gaussianCoeffPrefixSums;
     int m_gaussianCoeffsDim;
 
     wxByte m_shadowAlpha;
+    wxByte m_currentShadowAlpha;
     bool m_disableOnInactive;
     bool m_attachedFrameActive;
     wxBitmap m_bmp;
     wxFrame* m_attachedFrame;
     int m_shadowSize;
     wxPoint m_shadowOffset;
+
+    std::chrono::steady_clock::time_point m_fadeInTimerStart;
+    wxTimer m_fadeInTimer;
+
+    void OnTimerTick(wxTimerEvent& evnt);
 
     void InitGaussianKernel();
     void InitGaussianKernel(size_t stdDev);

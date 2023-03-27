@@ -1,9 +1,14 @@
 #include <wxbf/drop_shadow_frame_base.h>
 
+#include <wx/log.h>
 #include <wx/rawbmp.h>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+
+const double wxDropShadowFrameBase::FADE_IN_TIME_MS = 500;
+const double wxDropShadowFrameBase::FADE_IN_DELAY_MS = 200;
+const int wxDropShadowFrameBase::TIMER_TICK_MS = 20;
 
 bool wxDropShadowFrameBase::Create(wxWindow* parent,
     wxWindowID id, wxDropShadowWindowPart part, const wxPoint& pos,
@@ -29,6 +34,7 @@ bool wxDropShadowFrameBase::Create(wxWindow* parent,
 
     Bind(wxEVT_ACTIVATE, &wxDropShadowFrameBase::OnActivate, this);
     Bind(wxEVT_DPI_CHANGED, &wxDropShadowFrameBase::OnDpiChanged, this);
+    m_fadeInTimer.Bind(wxEVT_TIMER, &wxDropShadowFrameBase::OnTimerTick, this);
     return true;
 }
 
@@ -87,12 +93,21 @@ void wxDropShadowFrameBase::SetShadowOffset(wxPoint point)
 void wxDropShadowFrameBase::SetShadowAlpha(wxByte alpha)
 {
     m_shadowAlpha = alpha;
+    m_currentShadowAlpha = alpha;
     RedrawShadow();
 }
 
 void wxDropShadowFrameBase::SetDisableShadowOnInactiveWindow(bool disable)
 {
     m_disableOnInactive = disable;
+    RedrawShadow();
+}
+
+void wxDropShadowFrameBase::StartFadeIn()
+{
+    m_currentShadowAlpha = 1;
+    m_fadeInTimerStart = std::chrono::steady_clock::now();
+    m_fadeInTimer.Start(TIMER_TICK_MS);
     RedrawShadow();
 }
 
@@ -133,8 +148,9 @@ void wxDropShadowFrameBase::OnAttachedMove(wxMoveEvent& evnt)
 
 void wxDropShadowFrameBase::OnAttachedSize(wxSizeEvent& evnt)
 {
-    if (!IsShown()) {
+    if (!IsShown() && !m_attachedFrame->IsMaximized()) {
         Show();
+        StartFadeIn();
     }
 
     RepositionFrame();
@@ -148,9 +164,10 @@ void wxDropShadowFrameBase::OnAttachedMinimize(wxIconizeEvent& evnt)
     }
     else {
         Show();
+        StartFadeIn();
         RepositionFrame();
     }
-
+    
     evnt.Skip();
 }
 
@@ -249,10 +266,32 @@ void wxDropShadowFrameBase::Init()
     m_shadowSize = 10;
     m_shadowOffset = wxPoint(0, 2);
     m_attachedFrame = NULL;
-    m_shadowAlpha = 196;
+    m_shadowAlpha = 168;
+    m_currentShadowAlpha = 168;
     m_disableOnInactive = true;
 
     InitGaussianKernel();
+}
+
+void wxDropShadowFrameBase::OnTimerTick(wxTimerEvent& evnt)
+{
+    auto now = std::chrono::steady_clock::now();
+
+    int currentMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_fadeInTimerStart).count();
+    if (currentMs < FADE_IN_DELAY_MS) {
+        return;
+    }
+    currentMs -= FADE_IN_DELAY_MS;
+
+    if (currentMs > FADE_IN_TIME_MS) {
+        m_currentShadowAlpha = m_shadowAlpha;
+        m_fadeInTimer.Stop();
+    }
+    else {
+        m_currentShadowAlpha = static_cast<wxByte>(currentMs / FADE_IN_TIME_MS * m_shadowAlpha);
+    }
+
+    RedrawShadow();
 }
 
 void wxDropShadowFrameBase::InitGaussianKernel()
@@ -322,7 +361,7 @@ wxByte wxDropShadowFrameBase::GetShadowIntensity(int x, int y, wxSize windowSize
     wxRect windowRect(-x, -y, windowSize.x, windowSize.y);
     wxRect normalized = NormalizeRect(windowRect);
 
-    return static_cast<wxByte>(GetRangeSum(normalized) * m_shadowAlpha);
+    return static_cast<wxByte>(GetRangeSum(normalized) * m_currentShadowAlpha);
 }
 
 wxRect wxDropShadowFrameBase::NormalizeRect(const wxRect& rect) const
@@ -396,5 +435,7 @@ wxPoint wxDropShadowFrameBase::GetWindowOffset(const wxSize& windowSize) const
         return wxPoint(-m_shadowSize, -m_shadowSize);
     case wxSHADOW_RIGHT:
         return wxPoint(windowSize.x, -m_shadowSize);
+    default:
+        return wxPoint();
     }
 }

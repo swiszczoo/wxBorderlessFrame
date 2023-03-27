@@ -19,7 +19,11 @@ bool wxWindowGripperMSW::StartDragMove(wxWindow* window)
 
 bool wxWindowGripperMSW::StartDragResize(wxWindow* window, wxDirection which)
 {
-    return ::SendMessage(window->GetHWND(), WM_SYSCOMMAND, GetResizeMsgId(which), NULL) == 0;
+    if (window->GetWindowStyle() & wxRESIZE_BORDER) {
+        return ::SendMessage(window->GetHWND(), WM_SYSCOMMAND, GetResizeMsgId(which), NULL) == 0;
+    }
+
+    return false;
 }
 
 int wxWindowGripperMSW::GetResizeMsgId(wxDirection which) const

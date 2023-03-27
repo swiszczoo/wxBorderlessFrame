@@ -50,28 +50,8 @@ void wxDropShadowFrameMSW::UpdateWindowContents(wxDC& winDc, wxMemoryDC& dc)
     HDC windowHdc = winDc.GetHDC();
     HDC sourceHdc = dc.GetHDC();
 
-    BOOL result = ::UpdateLayeredWindow(GetHWND(), 
+    ::UpdateLayeredWindow(GetHWND(), 
         windowHdc, &pptDst, &psize, sourceHdc, &pnt, 0, &bf, ULW_ALPHA);
-    DWORD error = GetLastError();
-    error;
-}
-
-WXLRESULT wxDropShadowFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
-{
-    WINDOWPOS* wpos;
-
-    switch (message) {
-    case WM_WINDOWPOSCHANGING:
-        return wxDropShadowFrameBase::MSWWindowProc(message, wParam, lParam);
-        if (GetAttachedWindow()) {
-            wpos = reinterpret_cast<WINDOWPOS*>(lParam);
-            wpos->hwndInsertAfter = GetAttachedWindow()->GetHWND();
-            wpos->flags &= ~SWP_NOZORDER;
-            return 0;
-        }
-    }
-
-    return wxDropShadowFrameBase::MSWWindowProc(message, wParam, lParam);
 }
 
 #endif
