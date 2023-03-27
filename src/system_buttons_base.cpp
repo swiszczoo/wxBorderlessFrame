@@ -2,11 +2,36 @@
 #include <wxbf/system_buttons_base.h>
 
 wxSystemButtonsBase::wxSystemButtonsBase(wxFrame* frame)
+    : m_buttonSize(-1, -1)
 {
     InitColourTable();
 
     frame->Bind(wxEVT_DESTROY, &wxSystemButtonsBase::OnDestroy, this);
     frame->Bind(wxEVT_UPDATE_SYSTEM_BUTTONS, &wxSystemButtonsBase::OnUpdateSystemButtons, this);
+}
+
+void wxSystemButtonsBase::SetButtonSize(wxSize size)
+{
+    m_buttonSize = size;
+}
+
+wxSize wxSystemButtonsBase::GetButtonSize() const
+{
+    wxSize result = m_buttonSize;
+
+    if (result.x < 0 || result.y < 0) {
+        wxSize preferred = GetPreferredButtonSize();
+
+        if (result.x < 0) {
+            result.x = preferred.x;
+        }
+        
+        if (result.y < 0) {
+            result.y = preferred.y;
+        }
+    }
+
+    return result;
 }
 
 void wxSystemButtonsBase::OnDestroy(wxWindowDestroyEvent& evnt)

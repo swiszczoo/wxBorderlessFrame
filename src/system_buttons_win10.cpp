@@ -1,9 +1,14 @@
 #include <wxbf/system_buttons_win10.h>
 
+const wxString wxWin10SystemButtons::ICON_FAMILY_NAME = "Segoe MDL2 Assets";
+
 wxWin10SystemButtons::wxWin10SystemButtons(wxFrame* frame)
     : wxSystemButtonsBase(frame)
 {
     InitColourTable();
+
+    m_systemIconsFont.Create(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+        wxFONTWEIGHT_SEMIBOLD, false, ICON_FAMILY_NAME);
 }
 
 bool wxWin10SystemButtons::AreButtonsRightAligned() const
@@ -14,6 +19,11 @@ bool wxWin10SystemButtons::AreButtonsRightAligned() const
 wxSize wxWin10SystemButtons::GetPreferredButtonSize() const
 {
     return wxSize(45, 29);
+}
+
+wxSize wxWin10SystemButtons::MeasureButton(wxSystemButton which) const
+{
+    return GetPreferredButtonSize();
 }
 
 void wxWin10SystemButtons::InitColourTable()

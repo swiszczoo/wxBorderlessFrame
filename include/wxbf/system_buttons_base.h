@@ -41,12 +41,18 @@ public:
         return m_colorTable[which][state][kind];
     }
 
+    void SetButtonSize(wxSize size);
+    wxSize GetButtonSize() const;
+
 protected:
+    virtual wxSize MeasureButton(wxSystemButton which) const = 0;
+
     virtual void OnDestroy(wxWindowDestroyEvent& evnt);
     virtual void OnUpdateSystemButtons(wxCommandEvent& evnt);
 
 private:
     wxColour m_colorTable[4][4][2];
+    wxSize m_buttonSize;
 
     void InitColourTable();
     void UpdateSystemButtons();
