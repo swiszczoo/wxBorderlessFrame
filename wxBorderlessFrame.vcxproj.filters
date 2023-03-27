@@ -38,6 +38,15 @@
     <ClInclude Include="include\wxbf\resizer_drop_shadow_frame.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wxbf\system_buttons.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\system_buttons_base.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxbf\system_buttons_win10.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\borderless_frame_msw.cpp">
@@ -50,6 +59,15 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\window_gripper_msw.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system_buttons.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system_buttons_base.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\system_buttons_win10.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

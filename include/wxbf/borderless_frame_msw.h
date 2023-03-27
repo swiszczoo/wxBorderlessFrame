@@ -13,6 +13,8 @@ enum class wxWindowPart {
     CLOSE_BUTTON
 };
 
+wxDECLARE_EVENT(wxEVT_UPDATE_SYSTEM_BUTTONS, wxCommandEvent);
+
 class BFDLLEXPORT wxBorderlessFrameMSW : public wxFrame
 {
 public:

@@ -6,6 +6,8 @@
 
 #include <Uxtheme.h>
 
+wxDEFINE_EVENT(wxEVT_UPDATE_SYSTEM_BUTTONS, wxCommandEvent);
+
 wxBorderlessFrameMSW::wxBorderlessFrameMSW(wxWindow* parent,
     wxWindowID id, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style, const wxString& name)
