@@ -25,6 +25,7 @@ enum wxSystemButtonState {
 class BFDLLEXPORT wxSystemButtonsBase {
 public:
     explicit wxSystemButtonsBase(wxFrame* frame);
+    virtual ~wxSystemButtonsBase();
 
     virtual bool AreButtonsRightAligned() const = 0;
     virtual wxSize GetPreferredButtonSize() const = 0;
@@ -32,13 +33,13 @@ public:
     void SetColourTableEntry(wxSystemButton which, wxSystemButtonState state,
         wxSystemButtonColourKind kind, const wxColour& colour)
     {
-        m_colorTable[which][state][kind] = colour;
+        m_colourTable[which][state][kind] = colour;
     }
 
     wxColour& GetColourTableEntry(wxSystemButton which, wxSystemButtonState state,
         wxSystemButtonColourKind kind)
     {
-        return m_colorTable[which][state][kind];
+        return m_colourTable[which][state][kind];
     }
 
     void SetButtonSize(wxSize size);
@@ -46,14 +47,33 @@ public:
 
 protected:
     virtual wxSize MeasureButton(wxSystemButton which) const = 0;
+    virtual void DrawButton(wxDC& dc, wxSystemButton which,
+        wxSystemButtonState state, const wxRect& rect) = 0;
 
     virtual void OnDestroy(wxWindowDestroyEvent& evnt);
     virtual void OnUpdateSystemButtons(wxCommandEvent& evnt);
+    virtual void OnSize(wxSizeEvent& evnt);
+    virtual void OnMouse(wxMouseEvent& evnt);
+    virtual void OnActivate(wxActivateEvent& evnt);
+    virtual void OnMaximize(wxMaximizeEvent& evnt);
+    virtual void OnPaint(wxPaintEvent& evnt);
 
 private:
-    wxColour m_colorTable[4][4][2];
+    wxFrame* m_owner;
+    bool m_ownerActive;
+
+    wxColour m_colourTable[4][5][2];
     wxSize m_buttonSize;
+    wxRect m_totalRect;
+    wxRect m_buttonRects[4];
+    wxSystemButtonState m_lastButtonState[4];
+    wxSystemButtonState m_buttonState[4];
+    bool m_buttonVisible[4];
+    int m_pressedButton;
 
     void InitColourTable();
     void UpdateSystemButtons();
+    void UpdateDisabledActiveState();
+    void Layout();
+    void Redraw(bool withLayout = false);
 };

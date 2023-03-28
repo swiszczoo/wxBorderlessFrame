@@ -2,13 +2,19 @@
 
 const wxString wxWin10SystemButtons::ICON_FAMILY_NAME = "Segoe MDL2 Assets";
 
+const wchar_t wxWin10SystemButtons::ICON_MINIMIZE = L'\xE921'; // ChromeMinimize
+const wchar_t wxWin10SystemButtons::ICON_MAXIMIZE = L'\xE922';// ChromeMaximize
+const wchar_t wxWin10SystemButtons::ICON_RESTORE = L'\xE923'; // ChromeRestore
+const wchar_t wxWin10SystemButtons::ICON_CLOSE = L'\xE8BB'; // ChromeClose
+
 wxWin10SystemButtons::wxWin10SystemButtons(wxFrame* frame)
     : wxSystemButtonsBase(frame)
 {
     InitColourTable();
 
-    m_systemIconsFont.Create(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
-        wxFONTWEIGHT_SEMIBOLD, false, ICON_FAMILY_NAME);
+    // We use this ugly function because we set antialiasing mode to 4 (grayscale)
+    // to prevent cleartype from badly doing its job
+    m_systemIconsFont.SetNativeFontInfo("1;7.8;0;0;0;0;500;0;0;0;1;0;0;4;32;" + ICON_FAMILY_NAME);
 }
 
 bool wxWin10SystemButtons::AreButtonsRightAligned() const
@@ -18,12 +24,34 @@ bool wxWin10SystemButtons::AreButtonsRightAligned() const
 
 wxSize wxWin10SystemButtons::GetPreferredButtonSize() const
 {
-    return wxSize(45, 29);
+    return wxSize(46, 30);
 }
 
 wxSize wxWin10SystemButtons::MeasureButton(wxSystemButton which) const
 {
-    return GetPreferredButtonSize();
+    return GetButtonSize();
+}
+
+void wxWin10SystemButtons::DrawButton(wxDC& dc, wxSystemButton which,
+    wxSystemButtonState state, const wxRect& rect)
+{
+    static const wchar_t CHAR_LUT[] = { ICON_MINIMIZE,
+        ICON_MAXIMIZE, ICON_RESTORE, ICON_CLOSE };
+
+    dc.SetPen(*wxTRANSPARENT_PEN);
+    dc.SetBrush(wxBrush(GetColourTableEntry(which, state, wxSB_COLOUR_BACKGROUND)));
+    dc.DrawRectangle(rect);
+    dc.SetTextForeground(GetColourTableEntry(which, state, wxSB_COLOUR_FOREGROUND));
+    dc.SetFont(m_systemIconsFont);
+    wxString text = CHAR_LUT[which];
+    wxSize extent = dc.GetTextExtent(ICON_MAXIMIZE);
+
+    // Draw icons twice because they're much clearer
+    dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
+    if (which != wxSB_CLOSE || state != wxSB_STATE_HOVER && state != wxSB_STATE_PRESSED) {
+        dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
+        //dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
+    }
 }
 
 void wxWin10SystemButtons::InitColourTable()

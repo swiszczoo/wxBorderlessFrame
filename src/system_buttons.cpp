@@ -8,7 +8,7 @@ wxSystemButtonsBase* wxSystemButtonsFactory::CreateSystemButtons(wxFrame* frame)
 {
     wxPlatformInfo platformInfo;
     
-    if (platformInfo.GetOperatingSystemId() == wxOS_WINDOWS) {
+    if (platformInfo.GetOperatingSystemId() == wxOS_WINDOWS_NT) {
         if (wxFontEnumerator::IsValidFacename(wxWin10SystemButtons::ICON_FAMILY_NAME)) {
             return new wxWin10SystemButtons(frame);
         }

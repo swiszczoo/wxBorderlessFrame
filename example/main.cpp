@@ -8,6 +8,7 @@
 #endif
 
 #include <wxbf/borderless_frame.h>
+#include <wxbf/system_buttons.h>
 
 class MyApp : public wxApp
 {
@@ -19,6 +20,8 @@ class MyFrame : public wxBorderlessFrame
 public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 private:
+    wxSystemButtonsBase* m_buttons;
+
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
@@ -41,12 +44,12 @@ wxIMPLEMENT_APP(MyApp);
 bool MyApp::OnInit()
 {
 #ifdef _WIN32
-    SetProcessDPIAware();
+    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 #endif
 
-    MyFrame* frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(450, 340));
+    MyFrame* frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(640, 480));
     frame->SetBorderThickness(1);
-    frame->SetBorderColour(wxColour(255, 128, 0));
+    frame->SetBorderColour(wxColour(232, 17, 35));
     frame->SetDoubleBuffered(true);
     frame->Show(true);
     return true;
@@ -60,6 +63,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     SetStatusText("Welcome to wxWidgets!");
 
     CenterOnScreen();
+
+    m_buttons = wxSystemButtonsFactory::CreateSystemButtons(this);
 }
 void MyFrame::OnExit(wxCommandEvent& event)
 {

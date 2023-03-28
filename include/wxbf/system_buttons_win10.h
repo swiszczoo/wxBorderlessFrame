@@ -14,8 +14,15 @@ public:
 
 protected:
     virtual wxSize MeasureButton(wxSystemButton which) const wxOVERRIDE;
+    virtual void DrawButton(wxDC& dc, wxSystemButton which,
+        wxSystemButtonState state, const wxRect& rect) wxOVERRIDE;
 
 private:
+    static const wchar_t ICON_MINIMIZE;
+    static const wchar_t ICON_MAXIMIZE;
+    static const wchar_t ICON_RESTORE;
+    static const wchar_t ICON_CLOSE;
+
     wxFont m_systemIconsFont;
 
     void InitColourTable();
