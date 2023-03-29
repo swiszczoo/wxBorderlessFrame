@@ -1,5 +1,5 @@
 #pragma once
-#include "borderless_frame.h"
+#include "borderless_frame_base.h"
 #include "borderless_frame_common.h"
 
 enum wxSystemButton {
@@ -24,7 +24,7 @@ enum wxSystemButtonState {
 
 class BFDLLEXPORT wxSystemButtonsBase {
 public:
-    explicit wxSystemButtonsBase(wxFrame* frame);
+    explicit wxSystemButtonsBase(wxBorderlessFrameBase* frame);
     virtual ~wxSystemButtonsBase();
 
     virtual bool AreButtonsRightAligned() const = 0;
@@ -45,21 +45,24 @@ public:
     void SetButtonSize(wxSize size);
     wxSize GetButtonSize() const;
 
+    wxWindowPart GetWindowPart(wxPoint mousePos) const;
+
 protected:
-    virtual wxSize MeasureButton(wxSystemButton which) const = 0;
+    virtual wxSize MeasureButton(wxSystemButton which, wxCoord& margin) const = 0;
     virtual void DrawButton(wxDC& dc, wxSystemButton which,
         wxSystemButtonState state, const wxRect& rect) = 0;
 
     virtual void OnDestroy(wxWindowDestroyEvent& evnt);
     virtual void OnUpdateSystemButtons(wxCommandEvent& evnt);
     virtual void OnSize(wxSizeEvent& evnt);
+    virtual void OnMouseCaptureLost(wxMouseCaptureLostEvent& evnt);
     virtual void OnMouse(wxMouseEvent& evnt);
     virtual void OnActivate(wxActivateEvent& evnt);
     virtual void OnMaximize(wxMaximizeEvent& evnt);
     virtual void OnPaint(wxPaintEvent& evnt);
 
 private:
-    wxFrame* m_owner;
+    wxBorderlessFrameBase* m_owner;
     bool m_ownerActive;
 
     wxColour m_colourTable[4][5][2];

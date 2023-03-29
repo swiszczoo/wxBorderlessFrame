@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\wxbf\borderless_frame_base.h" />
     <ClInclude Include="include\wxbf\system_buttons.h" />
     <ClInclude Include="include\wxbf\system_buttons_base.h" />
     <ClInclude Include="include\wxbf\borderless_frame.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="include\wxbf\window_gripper_msw.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\borderless_frame_base.cpp" />
     <ClCompile Include="src\borderless_frame_msw.cpp" />
     <ClCompile Include="src\drop_shadow_frame_base.cpp" />
     <ClCompile Include="src\drop_shadow_frame_msw.cpp" />

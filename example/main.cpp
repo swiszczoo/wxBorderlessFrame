@@ -19,6 +19,10 @@ class MyFrame : public wxBorderlessFrame
 {
 public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
+
+protected:
+    virtual wxWindowPart GetWindowPart(wxPoint mousePosition) const wxOVERRIDE;
+
 private:
     wxSystemButtonsBase* m_buttons;
 
@@ -54,6 +58,7 @@ bool MyApp::OnInit()
     frame->Show(true);
     return true;
 }
+
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxBorderlessFrame(NULL, wxID_ANY, title, pos, size)
 {
@@ -65,16 +70,27 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     CenterOnScreen();
 
     m_buttons = wxSystemButtonsFactory::CreateSystemButtons(this);
+    m_buttons->SetColourTableEntry(wxSB_CLOSE, wxSB_STATE_NORMAL, wxSB_COLOUR_FOREGROUND, 
+        m_buttons->GetColourTableEntry(wxSB_CLOSE, wxSB_STATE_HOVER, wxSB_COLOUR_BACKGROUND));
 }
+
+wxWindowPart MyFrame::GetWindowPart(wxPoint mousePosition) const
+{
+    wxWindowPart sysButtonPart = m_buttons->GetWindowPart(mousePosition);
+    return sysButtonPart;
+}
+
 void MyFrame::OnExit(wxCommandEvent& event)
 {
     Close(true);
 }
+
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
     wxMessageBox("This is a wxWidgets' Hello world sample",
         "About Hello World", wxOK | wxICON_INFORMATION);
 }
+
 void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Hello world from wxWidgets!");

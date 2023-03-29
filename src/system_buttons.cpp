@@ -4,7 +4,7 @@
 
 #include <wx/fontenum.h>
 
-wxSystemButtonsBase* wxSystemButtonsFactory::CreateSystemButtons(wxFrame* frame)
+wxSystemButtonsBase* wxSystemButtonsFactory::CreateSystemButtons(wxBorderlessFrameBase* frame)
 {
     wxPlatformInfo platformInfo;
     

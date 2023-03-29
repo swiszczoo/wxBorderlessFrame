@@ -1,12 +1,13 @@
 #ifdef _WIN32
+#pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "uxtheme.lib")
 
 #include <wxbf/borderless_frame_msw.h>
 #include <wxbf/window_gripper_msw.h>
 
+#include <CommCtrl.h>
+#include <wx/msw/private.h>
 #include <Uxtheme.h>
-
-wxDEFINE_EVENT(wxEVT_UPDATE_SYSTEM_BUTTONS, wxCommandEvent);
 
 wxBorderlessFrameMSW::wxBorderlessFrameMSW(wxWindow* parent,
     wxWindowID id, const wxString& title, const wxPoint& pos,
@@ -37,6 +38,8 @@ bool wxBorderlessFrameMSW::Create(wxWindow* parent,
         m_shadow[i]->SetCornerRadius(16);
         m_shadow[i]->AttachToWindow(this);
     }
+
+    m_leaveTrackArmed = false;
 
     Bind(wxEVT_MAXIMIZE, &wxBorderlessFrameMSW::OnMaximize, this);
     Bind(wxEVT_SIZE, &wxBorderlessFrameMSW::OnSize, this);
@@ -123,11 +126,12 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
     }
     case WM_NCPAINT:
     {
+        wxWindowDC dc(this);
+
         if (IsMaximized()) {
             return 0;
         }
 
-        wxWindowDC dc(this);
         if (m_borderThickness > 0) {
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
             dc.SetPen(wxPen(m_borderColour, m_borderThickness));
@@ -141,7 +145,43 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
             dc.DrawRectangle(targetRect);
         }
         return 0;
+        /*
+        if (IsMaximized()) {
+            return 0;
+        }
+
+#define DCX_USESTYLE 0x00010000
+        ::HDC hdc;
+        hdc = GetDCEx(GetHWND(), (HRGN)0, DCX_WINDOW | DCX_USESTYLE);
+
+        wxRect targetRect(GetSize());
+        targetRect.x += m_borderThickness / 2;
+        targetRect.y += m_borderThickness / 2;
+        targetRect.width -= m_borderThickness - 1;
+        targetRect.height -= m_borderThickness - 1;
+
+        ::HPEN hpen = ::CreatePen(PS_SOLID, m_borderThickness,
+            RGB(m_borderColour.Red(), m_borderColour.Green(), m_borderColour.Blue()));
+        ::HGDIOBJ old = ::SelectObject(hdc, hpen);
+        ::MoveToEx(hdc, targetRect.GetLeft(), targetRect.GetTop(), NULL);
+        ::LineTo(hdc, targetRect.GetRight(), targetRect.GetTop());
+        ::LineTo(hdc, targetRect.GetRight(), targetRect.GetBottom());
+        ::LineTo(hdc, targetRect.GetLeft(), targetRect.GetBottom());
+        ::LineTo(hdc, targetRect.GetLeft(), targetRect.GetTop());
+        SelectObject(hdc, old);
+        DeleteObject(hpen);
+        
+        ReleaseDC(GetHWND(), hdc);
+        return 0;
+        */
     }
+    case WM_NCLBUTTONDOWN:
+    case WM_NCLBUTTONUP:
+    case WM_NCRBUTTONDOWN:
+    case WM_NCRBUTTONUP:
+    case WM_NCMOUSEMOVE:
+    case WM_NCMOUSELEAVE:
+        return HandleNcMessage(message, wParam, lParam);
     default:
         return wxFrame::MSWWindowProc(message, wParam, lParam);
     }
@@ -159,7 +199,25 @@ void wxBorderlessFrameMSW::Init()
 
 wxWindowPart wxBorderlessFrameMSW::GetWindowPart(wxPoint mousePosition) const
 {
-    return wxWindowPart::CLIENT_AREA;
+    return wxWP_CLIENT_AREA;
+}
+
+void wxBorderlessFrameMSW::RunSystemCommand(wxSystemCommand command)
+{
+    switch (command) {
+    case wxSC_MINIMIZE:
+        ::SendMessage(GetHWND(), WM_SYSCOMMAND, SC_MINIMIZE, NULL);
+        return;
+    case wxSC_MAXIMIZE:
+        ::SendMessage(GetHWND(), WM_SYSCOMMAND, SC_MAXIMIZE, NULL);
+        return;
+    case wxSC_RESTORE:
+        ::SendMessage(GetHWND(), WM_SYSCOMMAND, SC_RESTORE, NULL);
+        return;
+    case wxSC_CLOSE:
+        ::SendMessage(GetHWND(), WM_SYSCOMMAND, SC_CLOSE, NULL);
+        return;
+    }
 }
 
 void wxBorderlessFrameMSW::UpdateNcArea()
@@ -226,6 +284,94 @@ void wxBorderlessFrameMSW::OnSize(wxSizeEvent& evnt)
 {
     UpdateTheme();
     evnt.Skip();
+}
+
+#include <windowsx.h>
+WXLRESULT wxBorderlessFrameMSW::HandleNcMessage(
+    WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
+{
+    wxMouseEvent evnt;
+    int state = 0;
+    if (wxIsShiftDown())
+        state |= MK_SHIFT;
+    if (wxIsCtrlDown())
+        state |= MK_CONTROL;
+
+    // Only the high-order bit should be tested
+    if (::GetKeyState(VK_LBUTTON) & (1 << 15)) {
+        state |= MK_LBUTTON;
+    }
+    if (::GetKeyState(VK_MBUTTON) & (1 << 15)) {
+        state |= MK_MBUTTON;
+    }
+    if (::GetKeyState(VK_RBUTTON) & (1 << 15)) {
+        state |= MK_RBUTTON;
+    }
+
+    int x, y;
+
+    if (message != WM_NCMOUSELEAVE) {
+        switch (message) {
+        case WM_NCLBUTTONDOWN: evnt.SetEventType(wxEVT_NC_LEFT_DOWN); break;
+        case WM_NCLBUTTONUP: evnt.SetEventType(wxEVT_NC_LEFT_UP); break;
+        case WM_NCRBUTTONDOWN:  evnt.SetEventType(wxEVT_NC_RIGHT_DOWN); break;
+        case WM_NCRBUTTONUP: evnt.SetEventType(wxEVT_NC_RIGHT_UP); break;
+        case WM_NCMOUSEMOVE: evnt.SetEventType(wxEVT_NC_MOTION); break;
+        }
+
+        if (message == WM_NCMOUSEMOVE) {
+            TrackNcLeave();
+        }
+
+        x = GET_X_LPARAM(lParam);
+        y = GET_Y_LPARAM(lParam);
+        wxRect rect = GetClientRect();
+        rect.SetPosition(ClientToScreen(rect.GetPosition()));
+        x -= rect.x;
+        y -= rect.y;
+
+        InitMouseEvent(evnt, x, y, state);
+    }
+    else {
+        m_leaveTrackArmed = false;
+
+        POINT pt;
+        wxGetCursorPosMSW(&pt);
+
+        wxRect rect = GetClientRect();
+        rect.SetPosition(ClientToScreen(rect.GetPosition()));
+        pt.x -= rect.x;
+        pt.y -= rect.y;
+
+        evnt.SetEventType(wxEVT_NC_LEAVE);
+        InitMouseEvent(evnt, pt.x, pt.y, state);
+    }
+
+    wxPostEvent(this, evnt);
+
+    if (wParam == HTMINBUTTON || wParam == HTMAXBUTTON || wParam == HTCLOSE) {
+        return 0;
+    }
+
+    return wxFrame::MSWWindowProc(message, wParam, lParam);
+}
+
+void wxBorderlessFrameMSW::TrackNcLeave()
+{
+    if (m_leaveTrackArmed) {
+        return;
+    }
+
+    ::TRACKMOUSEEVENT eventTrack;
+    eventTrack.cbSize = sizeof(::TRACKMOUSEEVENT);
+    eventTrack.dwFlags = TME_NONCLIENT | TME_LEAVE;
+    eventTrack.hwndTrack = GetHWND();
+    eventTrack.dwHoverTime = HOVER_DEFAULT;
+    if (!_TrackMouseEvent(&eventTrack)) {
+        wxLogWarning("_TrackMouseEvent failed");
+    }
+
+    m_leaveTrackArmed = true;
 }
 
 #endif

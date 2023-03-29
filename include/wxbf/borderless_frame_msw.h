@@ -1,21 +1,12 @@
 #pragma once
+#include "borderless_frame_base.h"
 #include "borderless_frame_common.h"
 #include "drop_shadow_frame_msw.h"
 #include "resizer_drop_shadow_frame.h"
 
 #include <wx/wx.h>
 
-enum class wxWindowPart {
-    CLIENT_AREA,
-    TITLEBAR,
-    MINIMIZE_BUTTON,
-    MAXIMIZE_BUTTON,
-    CLOSE_BUTTON
-};
-
-wxDECLARE_EVENT(wxEVT_UPDATE_SYSTEM_BUTTONS, wxCommandEvent);
-
-class BFDLLEXPORT wxBorderlessFrameMSW : public wxFrame
+class BFDLLEXPORT wxBorderlessFrameMSW : public wxBorderlessFrameBase
 {
 public:
     wxBorderlessFrameMSW() { Init(); }
@@ -63,6 +54,8 @@ public:
         WXWPARAM wParam,
         WXLPARAM lParam) wxOVERRIDE;
 
+    virtual void RunSystemCommand(wxSystemCommand command) wxOVERRIDE;
+
 protected:
     virtual wxWindowPart GetWindowPart(wxPoint mousePosition) const;
 
@@ -70,6 +63,7 @@ private:
     wxColour m_borderColour;
     int m_borderThickness;
     bool m_maximizedTheme;
+    bool m_leaveTrackArmed;
 
     wxResizerDropShadowFrame<wxDropShadowFrameMSW>* m_shadow[4];
 
@@ -81,4 +75,7 @@ private:
 
     void OnMaximize(wxMaximizeEvent& evnt);
     void OnSize(wxSizeEvent& evnt);
+
+    WXLRESULT HandleNcMessage(WXUINT message, WXWPARAM wParam, WXLPARAM lParam); 
+    void TrackNcLeave();
 };

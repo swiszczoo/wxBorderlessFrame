@@ -47,6 +47,9 @@
     <ClInclude Include="include\wxbf\system_buttons_win10.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\wxbf\borderless_frame_base.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\borderless_frame_msw.cpp">
@@ -68,6 +71,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\system_buttons_win10.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\borderless_frame_base.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,7 +7,7 @@ const wchar_t wxWin10SystemButtons::ICON_MAXIMIZE = L'\xE922';// ChromeMaximize
 const wchar_t wxWin10SystemButtons::ICON_RESTORE = L'\xE923'; // ChromeRestore
 const wchar_t wxWin10SystemButtons::ICON_CLOSE = L'\xE8BB'; // ChromeClose
 
-wxWin10SystemButtons::wxWin10SystemButtons(wxFrame* frame)
+wxWin10SystemButtons::wxWin10SystemButtons(wxBorderlessFrameBase* frame)
     : wxSystemButtonsBase(frame)
 {
     InitColourTable();
@@ -27,7 +27,7 @@ wxSize wxWin10SystemButtons::GetPreferredButtonSize() const
     return wxSize(46, 30);
 }
 
-wxSize wxWin10SystemButtons::MeasureButton(wxSystemButton which) const
+wxSize wxWin10SystemButtons::MeasureButton(wxSystemButton which, wxCoord& margin) const
 {
     return GetButtonSize();
 }
@@ -38,9 +38,13 @@ void wxWin10SystemButtons::DrawButton(wxDC& dc, wxSystemButton which,
     static const wchar_t CHAR_LUT[] = { ICON_MINIMIZE,
         ICON_MAXIMIZE, ICON_RESTORE, ICON_CLOSE };
 
-    dc.SetPen(*wxTRANSPARENT_PEN);
-    dc.SetBrush(wxBrush(GetColourTableEntry(which, state, wxSB_COLOUR_BACKGROUND)));
-    dc.DrawRectangle(rect);
+    wxColour bgColor = GetColourTableEntry(which, state, wxSB_COLOUR_BACKGROUND);
+    if (bgColor.Alpha() > 0) { // Do not draw background if transparent colour is selected
+        dc.SetPen(*wxTRANSPARENT_PEN);
+        dc.SetBrush(wxBrush(bgColor));
+        dc.DrawRectangle(rect);
+    }
+
     dc.SetTextForeground(GetColourTableEntry(which, state, wxSB_COLOUR_FOREGROUND));
     dc.SetFont(m_systemIconsFont);
     wxString text = CHAR_LUT[which];
@@ -50,7 +54,6 @@ void wxWin10SystemButtons::DrawButton(wxDC& dc, wxSystemButton which,
     dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
     if (which != wxSB_CLOSE || state != wxSB_STATE_HOVER && state != wxSB_STATE_PRESSED) {
         dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
-        //dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
     }
 }
 

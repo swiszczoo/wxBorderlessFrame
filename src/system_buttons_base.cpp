@@ -3,7 +3,7 @@
 
 #include <wx/dcbuffer.h>
 
-wxSystemButtonsBase::wxSystemButtonsBase(wxFrame* frame)
+wxSystemButtonsBase::wxSystemButtonsBase(wxBorderlessFrameBase* frame)
     : m_owner(frame)
     , m_ownerActive(frame->IsActive())
     , m_buttonSize(-1, -1)
@@ -24,8 +24,13 @@ wxSystemButtonsBase::wxSystemButtonsBase(wxFrame* frame)
     frame->Bind(wxEVT_LEFT_DOWN, &wxSystemButtonsBase::OnMouse, this);
     frame->Bind(wxEVT_LEFT_UP, &wxSystemButtonsBase::OnMouse, this);
     frame->Bind(wxEVT_MOTION, &wxSystemButtonsBase::OnMouse, this);
-    frame->Bind(wxEVT_ENTER_WINDOW, &wxSystemButtonsBase::OnMouse, this);
-    frame->Bind(wxEVT_LEAVE_WINDOW, &wxSystemButtonsBase::OnMouse, this);
+    //frame->Bind(wxEVT_ENTER_WINDOW, &wxSystemButtonsBase::OnMouse, this);
+    //frame->Bind(wxEVT_LEAVE_WINDOW, &wxSystemButtonsBase::OnMouse, this);
+    frame->Bind(wxEVT_MOUSE_CAPTURE_LOST, &wxSystemButtonsBase::OnMouseCaptureLost, this);
+    frame->Bind(wxEVT_NC_LEFT_DOWN, &wxSystemButtonsBase::OnMouse, this);
+    frame->Bind(wxEVT_NC_LEFT_UP, &wxSystemButtonsBase::OnMouse, this);
+    frame->Bind(wxEVT_NC_MOTION, &wxSystemButtonsBase::OnMouse, this);
+    frame->Bind(wxEVT_NC_LEAVE, &wxSystemButtonsBase::OnMouse, this);
     frame->Bind(wxEVT_ACTIVATE, &wxSystemButtonsBase::OnActivate, this);
     frame->Bind(wxEVT_MAXIMIZE, &wxSystemButtonsBase::OnMaximize, this);
     frame->Bind(wxEVT_PAINT, &wxSystemButtonsBase::OnPaint, this);
@@ -59,6 +64,18 @@ wxSize wxSystemButtonsBase::GetButtonSize() const
     return result;
 }
 
+wxWindowPart wxSystemButtonsBase::GetWindowPart(wxPoint mousePos) const
+{
+#define IS_HOVER(i) (m_buttonState[i] == wxSB_STATE_HOVER || m_buttonState[i] == wxSB_STATE_PRESSED)
+
+    if (IS_HOVER(wxSB_MINIMIZE)) return wxWP_MINIMIZE_BUTTON;
+    if (IS_HOVER(wxSB_MAXIMIZE)) return wxWP_MAXIMIZE_BUTTON;
+    if (IS_HOVER(wxSB_RESTORE)) return wxWP_MAXIMIZE_BUTTON;
+    if (IS_HOVER(wxSB_CLOSE)) return wxWP_CLOSE_BUTTON;
+    if (m_owner->ScreenToClient(mousePos).y <= m_totalRect.height) return wxWP_TITLEBAR;
+    return wxWP_CLIENT_AREA;
+}
+
 void wxSystemButtonsBase::OnDestroy(wxWindowDestroyEvent& evnt)
 {
     delete this;
@@ -77,18 +94,34 @@ void wxSystemButtonsBase::OnSize(wxSizeEvent& evnt)
     evnt.Skip();
 }
 
+void wxSystemButtonsBase::OnMouseCaptureLost(wxMouseCaptureLostEvent& evnt)
+{
+    m_pressedButton = -1;
+    Redraw();
+}
+
 void wxSystemButtonsBase::OnMouse(wxMouseEvent& evnt)
 {
     wxPoint pos = evnt.GetPosition();
 
-    if (evnt.Leaving()) {
+    if (evnt.GetEventType() == wxEVT_NC_LEAVE && !m_owner->HasCapture()) {
         pos = wxPoint(-100, -100);
     }
 
     bool stateChanged = false;
     wxSystemButtonState normalState = m_ownerActive ? wxSB_STATE_NORMAL : wxSB_STATE_INACTIVE;
 
-    if (!evnt.LeftIsDown() || evnt.LeftUp()) {
+    if (evnt.LeftUp()) {
+        for (size_t i = 0; i < 4; ++i) {
+            if (m_buttonState[i] == wxSB_STATE_PRESSED) {
+                m_owner->ReleaseMouse();
+                m_owner->RunSystemCommand(static_cast<wxSystemCommand>(i));
+                break;
+            }
+        }
+    }
+
+    if (!evnt.LeftIsDown() || evnt.GetEventType() == wxEVT_NC_LEFT_UP) {
         if (m_pressedButton != -1) {
             m_pressedButton = -1;
 
@@ -98,7 +131,7 @@ void wxSystemButtonsBase::OnMouse(wxMouseEvent& evnt)
         }
     }
 
-    if (evnt.LeftDown()) {
+    if (evnt.GetEventType() == wxEVT_NC_LEFT_DOWN) {
         for (size_t i = 0; i < 4; ++i) {
             if (m_buttonState[i] == wxSB_STATE_DISABLED) {
                 continue;
@@ -114,28 +147,26 @@ void wxSystemButtonsBase::OnMouse(wxMouseEvent& evnt)
         }
     }
 
-    //if (evnt.Moving() || evnt.Dragging()) {
-        for (size_t i = 0; i < 4; ++i) {
-            if (m_buttonState[i] == wxSB_STATE_DISABLED) {
-                continue;
-            }
-
-            wxSystemButtonState targetState;
-            if (m_buttonRects[i].Contains(pos)) {
-                if (m_pressedButton == i) targetState = wxSB_STATE_PRESSED;
-                else if (m_pressedButton == -1) targetState = wxSB_STATE_HOVER;
-                else targetState = normalState;
-            }
-            else {
-                targetState = normalState;
-            }
-
-            if (m_buttonState[i] != targetState) {
-                m_buttonState[i] = targetState;
-                stateChanged = true;
-            }
+    for (size_t i = 0; i < 4; ++i) {
+        if (m_buttonState[i] == wxSB_STATE_DISABLED) {
+            continue;
         }
-    //}
+
+        wxSystemButtonState targetState;
+        if (m_buttonRects[i].Contains(pos)) {
+            if (m_pressedButton == i) targetState = wxSB_STATE_PRESSED;
+            else if (m_pressedButton == -1) targetState = wxSB_STATE_HOVER;
+            else targetState = normalState;
+        }
+        else {
+            targetState = normalState;
+        }
+
+        if (m_buttonState[i] != targetState) {
+            m_buttonState[i] = targetState;
+            stateChanged = true;
+        }
+    }
 
     if (stateChanged) {
         Redraw();
@@ -266,10 +297,11 @@ void wxSystemButtonsBase::Layout()
                 continue;
             }
 
-            wxSize btnSize = m_owner->FromDIP(MeasureButton(static_cast<wxSystemButton>(i)));
+            wxCoord margin = 0;
+            wxSize btnSize = m_owner->FromDIP(MeasureButton(static_cast<wxSystemButton>(i), margin));
             m_buttonRects[i] = wxRect(x - btnSize.x, 0, btnSize.x, btnSize.y);
             totalRect += m_buttonRects[i];
-            x -= btnSize.x;
+            x -= btnSize.x + margin;
         }
     }
     else {
@@ -280,10 +312,11 @@ void wxSystemButtonsBase::Layout()
                 continue;
             }
 
-            wxSize btnSize = m_owner->FromDIP(MeasureButton(static_cast<wxSystemButton>(i)));
+            wxCoord margin = 0;
+            wxSize btnSize = m_owner->FromDIP(MeasureButton(static_cast<wxSystemButton>(i), margin));
             m_buttonRects[i] = wxRect(x, 0, btnSize.x, btnSize.y);
             totalRect += m_buttonRects[i];
-            x += btnSize.x;
+            x += btnSize.x + margin;
         }
     }
 

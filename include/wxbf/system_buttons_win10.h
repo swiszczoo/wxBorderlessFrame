@@ -7,13 +7,13 @@ class BFDLLEXPORT wxWin10SystemButtons : public wxSystemButtonsBase
 public:
     static const wxString ICON_FAMILY_NAME;
     
-    explicit wxWin10SystemButtons(wxFrame* frame);
+    explicit wxWin10SystemButtons(wxBorderlessFrameBase* frame);
 
     virtual bool AreButtonsRightAligned() const wxOVERRIDE;
     virtual wxSize GetPreferredButtonSize() const wxOVERRIDE;
 
 protected:
-    virtual wxSize MeasureButton(wxSystemButton which) const wxOVERRIDE;
+    virtual wxSize MeasureButton(wxSystemButton which, wxCoord& margin) const wxOVERRIDE;
     virtual void DrawButton(wxDC& dc, wxSystemButton which,
         wxSystemButtonState state, const wxRect& rect) wxOVERRIDE;
 
