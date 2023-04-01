@@ -129,7 +129,9 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
         wxWindowDC dc(this);
 
         if (IsMaximized()) {
-            return 0;
+            // It must be called here, otherwise Aero Snap suddenly stops working
+            // If it draws something we do not want, use ExcludeClipRect or something
+            return wxFrame::MSWWindowProc(message, wParam, lParam);
         }
 
         if (m_borderThickness > 0) {
@@ -144,36 +146,8 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
 
             dc.DrawRectangle(targetRect);
         }
+
         return 0;
-        /*
-        if (IsMaximized()) {
-            return 0;
-        }
-
-#define DCX_USESTYLE 0x00010000
-        ::HDC hdc;
-        hdc = GetDCEx(GetHWND(), (HRGN)0, DCX_WINDOW | DCX_USESTYLE);
-
-        wxRect targetRect(GetSize());
-        targetRect.x += m_borderThickness / 2;
-        targetRect.y += m_borderThickness / 2;
-        targetRect.width -= m_borderThickness - 1;
-        targetRect.height -= m_borderThickness - 1;
-
-        ::HPEN hpen = ::CreatePen(PS_SOLID, m_borderThickness,
-            RGB(m_borderColour.Red(), m_borderColour.Green(), m_borderColour.Blue()));
-        ::HGDIOBJ old = ::SelectObject(hdc, hpen);
-        ::MoveToEx(hdc, targetRect.GetLeft(), targetRect.GetTop(), NULL);
-        ::LineTo(hdc, targetRect.GetRight(), targetRect.GetTop());
-        ::LineTo(hdc, targetRect.GetRight(), targetRect.GetBottom());
-        ::LineTo(hdc, targetRect.GetLeft(), targetRect.GetBottom());
-        ::LineTo(hdc, targetRect.GetLeft(), targetRect.GetTop());
-        SelectObject(hdc, old);
-        DeleteObject(hpen);
-        
-        ReleaseDC(GetHWND(), hdc);
-        return 0;
-        */
     }
     case WM_NCLBUTTONDOWN:
     case WM_NCLBUTTONUP:
@@ -266,9 +240,13 @@ void wxBorderlessFrameMSW::UpdateTheme()
 
     if (desiredTheme) {
         SetWindowTheme(GetHWND(), NULL, NULL);
+        UpdateNcArea();
+        RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
     }
     else {
         SetWindowTheme(GetHWND(), L"", L"");
+        UpdateNcArea();
+        RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
     }
 
     m_maximizedTheme = desiredTheme;
@@ -375,3 +353,4 @@ void wxBorderlessFrameMSW::TrackNcLeave()
 }
 
 #endif
+;
