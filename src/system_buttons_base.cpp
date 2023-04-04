@@ -24,8 +24,6 @@ wxSystemButtonsBase::wxSystemButtonsBase(wxBorderlessFrameBase* frame)
     frame->Bind(wxEVT_LEFT_DOWN, &wxSystemButtonsBase::OnMouse, this);
     frame->Bind(wxEVT_LEFT_UP, &wxSystemButtonsBase::OnMouse, this);
     frame->Bind(wxEVT_MOTION, &wxSystemButtonsBase::OnMouse, this);
-    //frame->Bind(wxEVT_ENTER_WINDOW, &wxSystemButtonsBase::OnMouse, this);
-    //frame->Bind(wxEVT_LEAVE_WINDOW, &wxSystemButtonsBase::OnMouse, this);
     frame->Bind(wxEVT_MOUSE_CAPTURE_LOST, &wxSystemButtonsBase::OnMouseCaptureLost, this);
     frame->Bind(wxEVT_NC_LEFT_DOWN, &wxSystemButtonsBase::OnMouse, this);
     frame->Bind(wxEVT_NC_LEFT_UP, &wxSystemButtonsBase::OnMouse, this);
@@ -216,15 +214,15 @@ void wxSystemButtonsBase::InitColourTable()
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_NORMAL, 
             wxSB_COLOUR_BACKGROUND, wxColour(255, 255, 255));
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_NORMAL, 
-            wxSB_COLOUR_FOREGROUND, wxColour(0, 0, 0));
+            wxSB_COLOUR_FOREGROUND, wxColour(64, 64, 64));
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_HOVER, 
             wxSB_COLOUR_BACKGROUND, wxColour(220, 220, 220));
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_HOVER, 
-            wxSB_COLOUR_FOREGROUND, wxColour(0, 0, 0));
+            wxSB_COLOUR_FOREGROUND, wxColour(64, 64, 64));
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_PRESSED, 
             wxSB_COLOUR_BACKGROUND, wxColour(168, 168, 168));
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_PRESSED, 
-            wxSB_COLOUR_FOREGROUND, wxColour(0, 0, 0));
+            wxSB_COLOUR_FOREGROUND, wxColour(64, 64, 64));
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_DISABLED, 
             wxSB_COLOUR_BACKGROUND, wxColour(255, 255, 255));
         SetColourTableEntry(static_cast<wxSystemButton>(which), wxSB_STATE_DISABLED, 

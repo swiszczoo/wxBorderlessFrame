@@ -1,5 +1,8 @@
 #pragma once
+#include "system_menu_png.h"
+
 #include <wxbf/system_buttons.h>
+#include <wxbf/system_buttons_fallback.h>
 #include <wxbf/system_buttons_win10.h>
 
 #include <wx/fontenum.h>
@@ -13,7 +16,7 @@ wxSystemButtonsBase* wxSystemButtonsFactory::CreateSystemButtons(wxBorderlessFra
             return new wxWin10SystemButtons(frame);
         }
     }
-
-    // We couldn't find any sufficient implementation
-    return nullptr;
+    
+    // If everything failed, use fallback implementation
+    return new wxFallbackSystemButtons(frame, SYSTEM_MENU_DATA, SYSTEM_MENU_SIZE);
 }

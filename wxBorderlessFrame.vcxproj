@@ -94,8 +94,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -108,8 +109,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -122,8 +124,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,8 +139,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);;BFRAME_DLL_EXPORT;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,9 +161,11 @@
     <ClInclude Include="include\wxbf\drop_shadow_frame_base.h" />
     <ClInclude Include="include\wxbf\drop_shadow_frame_msw.h" />
     <ClInclude Include="include\wxbf\resizer_drop_shadow_frame.h" />
+    <ClInclude Include="include\wxbf\system_buttons_fallback.h" />
     <ClInclude Include="include\wxbf\system_buttons_win10.h" />
     <ClInclude Include="include\wxbf\window_gripper.h" />
     <ClInclude Include="include\wxbf\window_gripper_msw.h" />
+    <ClInclude Include="src\system_menu_png.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\borderless_frame_base.cpp" />
@@ -168,7 +174,9 @@
     <ClCompile Include="src\drop_shadow_frame_msw.cpp" />
     <ClCompile Include="src\system_buttons.cpp" />
     <ClCompile Include="src\system_buttons_base.cpp" />
+    <ClCompile Include="src\system_buttons_fallback.cpp" />
     <ClCompile Include="src\system_buttons_win10.cpp" />
+    <ClCompile Include="src\system_menu_png.cpp" />
     <ClCompile Include="src\window_gripper_msw.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

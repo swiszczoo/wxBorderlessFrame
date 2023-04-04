@@ -50,6 +50,7 @@ bool MyApp::OnInit()
 #ifdef _WIN32
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 #endif
+    wxInitAllImageHandlers();
 
     MyFrame* frame = new MyFrame("Hello World", wxPoint(50, 50), wxSize(640, 480));
     frame->SetBorderThickness(1);
@@ -70,7 +71,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     CenterOnScreen();
 
     m_buttons = wxSystemButtonsFactory::CreateSystemButtons(this);
-    m_buttons->SetColourTableEntry(wxSB_CLOSE, wxSB_STATE_NORMAL, wxSB_COLOUR_FOREGROUND, 
+    m_buttons->SetColourTableEntry(wxSB_CLOSE, wxSB_STATE_NORMAL, wxSB_COLOUR_FOREGROUND,
         m_buttons->GetColourTableEntry(wxSB_CLOSE, wxSB_STATE_HOVER, wxSB_COLOUR_BACKGROUND));
 }
 
