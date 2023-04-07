@@ -1,7 +1,10 @@
 #pragma once
-#include "borderless_frame_common.h"
-
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
 #include <wx/wx.h>
+#endif
+
+#include "borderless_frame_common.h"
 
 wxDECLARE_EXPORTED_EVENT(BFDLLEXPORT, wxEVT_UPDATE_SYSTEM_BUTTONS, wxCommandEvent);
 wxDECLARE_EXPORTED_EVENT(BFDLLEXPORT, wxEVT_NC_LEFT_DOWN, wxMouseEvent);

@@ -1,6 +1,10 @@
 #pragma once
-#include "borderless_frame_common.h"
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
 #include <wx/wx.h>
+#endif
+
+#include "borderless_frame_common.h"
 
 #include <chrono>
 

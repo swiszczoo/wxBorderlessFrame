@@ -70,7 +70,8 @@ wxWindowPart wxSystemButtonsBase::GetWindowPart(wxPoint mousePos) const
     if (IS_HOVER(wxSB_MAXIMIZE)) return wxWP_MAXIMIZE_BUTTON;
     if (IS_HOVER(wxSB_RESTORE)) return wxWP_MAXIMIZE_BUTTON;
     if (IS_HOVER(wxSB_CLOSE)) return wxWP_CLOSE_BUTTON;
-    if (m_owner->ScreenToClient(mousePos).y <= m_totalRect.height) return wxWP_TITLEBAR;
+    int y = m_owner->ScreenToClient(mousePos).y;
+    if (0 <= y && y <= m_totalRect.height) return wxWP_TITLEBAR;
     return wxWP_CLIENT_AREA;
 }
 
@@ -298,7 +299,7 @@ void wxSystemButtonsBase::Layout()
             wxCoord margin = 0;
             wxSize btnSize = m_owner->FromDIP(MeasureButton(static_cast<wxSystemButton>(i), margin));
             m_buttonRects[i] = wxRect(x - btnSize.x, 0, btnSize.x, btnSize.y);
-            totalRect += m_buttonRects[i];
+            AppendToRect(totalRect, m_buttonRects[i]);
             x -= btnSize.x + margin;
         }
     }
@@ -313,7 +314,7 @@ void wxSystemButtonsBase::Layout()
             wxCoord margin = 0;
             wxSize btnSize = m_owner->FromDIP(MeasureButton(static_cast<wxSystemButton>(i), margin));
             m_buttonRects[i] = wxRect(x, 0, btnSize.x, btnSize.y);
-            totalRect += m_buttonRects[i];
+            AppendToRect(totalRect, m_buttonRects[i]);
             x += btnSize.x + margin;
         }
     }
@@ -332,12 +333,12 @@ void wxSystemButtonsBase::Redraw(bool withLayout)
 
         Layout();
 
-        redrawRect += m_totalRect;
+        AppendToRect(redrawRect, m_totalRect);
     }
     else {
         for (size_t i = 0; i < 4; ++i) {
             if (m_lastButtonState[i] != m_buttonState[i]) {
-                redrawRect += m_buttonRects[i];
+                AppendToRect(redrawRect, m_buttonRects[i]);
                 m_lastButtonState[i] = m_buttonState[i];
             }
         }

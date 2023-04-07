@@ -45,6 +45,11 @@ public:
     void SetButtonSize(wxSize size);
     wxSize GetButtonSize() const;
 
+    wxSize GetTotalSize() const
+    {
+        return m_totalRect.GetSize();
+    }
+
     wxWindowPart GetWindowPart(wxPoint mousePos) const;
 
 protected:
@@ -79,4 +84,14 @@ private:
     void UpdateDisabledActiveState();
     void Layout();
     void Redraw(bool withLayout = false);
+
+    static void AppendToRect(wxRect& rect, wxRect toAppend) 
+    {
+        if (rect.IsEmpty()) {
+            rect = toAppend;
+        }
+        else {
+            rect += toAppend;
+        }
+    }
 };

@@ -1,7 +1,10 @@
 #pragma once
-#include "window_gripper.h"
-
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
 #include <wx/wx.h>
+#endif
+
+#include "window_gripper.h"
 
 template <class DropShadowImpl>
 class wxResizerDropShadowFrame : public DropShadowImpl

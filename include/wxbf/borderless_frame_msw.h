@@ -1,10 +1,13 @@
 #pragma once
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
 #include "borderless_frame_base.h"
 #include "borderless_frame_common.h"
 #include "drop_shadow_frame_msw.h"
 #include "resizer_drop_shadow_frame.h"
-
-#include <wx/wx.h>
 
 class BFDLLEXPORT wxBorderlessFrameMSW : public wxBorderlessFrameBase
 {
