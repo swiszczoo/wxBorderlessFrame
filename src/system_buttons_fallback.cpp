@@ -34,7 +34,7 @@ void wxFallbackSystemButtons::DrawButton(wxDC& dc, wxSystemButton which,
     const wxColour fg = GetColourTableEntry(which, state, wxSB_COLOUR_FOREGROUND);
     const wxColour bg = GetColourTableEntry(which, state, wxSB_COLOUR_BACKGROUND);
 
-    int dimension = std::min(rect.width, rect.height) * 3 / 5;
+    int dimension = std::min(rect.width, rect.height) / 2;
 
     if (!m_buttonBitmapsCache[which].IsOk()
         || m_buttonBitmapsCache[which].GetWidth() != dimension

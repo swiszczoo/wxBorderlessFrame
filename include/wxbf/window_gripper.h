@@ -4,6 +4,8 @@
 #include <wx/wx.h>
 #endif
 
+// TODO: Add factory method
+
 class wxWindowGripper
 {
 public:

@@ -51,6 +51,7 @@ public:
     }
 
     wxWindowPart GetWindowPart(wxPoint mousePos) const;
+    virtual void UpdateState();
 
 protected:
     virtual wxSize MeasureButton(wxSystemButton which, wxCoord& margin) const = 0;

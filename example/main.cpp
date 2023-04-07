@@ -7,6 +7,9 @@
 #include <wx/wx.h>
 #endif
 
+#include <wx/clrpicker.h>
+#include <wx/spinctrl.h>
+
 #include <wxbf/borderless_frame.h>
 #include <wxbf/system_buttons.h>
 #include <wxbf/window_gripper_msw.h>
@@ -31,9 +34,26 @@ private:
     wxButton* m_btnSystemMenu;
     wxButton* m_btnDragMove;
     wxButton* m_btnDragResize;
+    wxCheckBox* m_chkResizable;
+    wxCheckBox* m_chkMinimizeBox;
+    wxCheckBox* m_chkMaximizeBox;
+    wxCheckBox* m_chkCloseBox;
+    wxCheckBox* m_chkStayOnTop;
+    wxCheckBox* m_chkNoTaskbar;
+    wxSpinCtrl* m_spinBorderSize;
+    wxSpinCtrl* m_spinShadowSize;
+    wxSpinCtrl* m_spinShadowAlpha;
+    wxSpinCtrl* m_spinShadowX;
+    wxSpinCtrl* m_spinShadowY;
+    wxColourPickerCtrl* m_colBorder;
+    wxCheckBox* m_chkShadowOnInactive;
+
     bool m_titlebarRightDown;
 
     void SetupGui();
+    void ReadWindowStyle();
+    void RedrawTitlebar();
+
     void OnPaint(wxPaintEvent& event);
     void OnKeyDown(wxKeyEvent& event);
     void OnNcMouse(wxMouseEvent& event);
@@ -43,6 +63,13 @@ private:
     void OnOpenSystemMenu(wxCommandEvent& event);
     void OnStartDragMove(wxMouseEvent& event);
     void OnStartDragResize(wxMouseEvent& event);
+    void OnWindowStyleChange(wxCommandEvent& event);
+    void OnChangeBorderSize(wxSpinEvent& event);
+    void OnChangeShadowSize(wxSpinEvent& event);
+    void OnChangeShadowAlpha(wxSpinEvent& event);
+    void OnChangeShadowOffset(wxSpinEvent& event);
+    void OnChangeBorderColour(wxColourPickerEvent& event);
+    void OnChangeInactiveShadow(wxCommandEvent& event);
 };
 enum
 {
@@ -53,14 +80,12 @@ wxIMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit()
 {
-#ifdef _WIN32
+#if (defined _WIN32 && WINVER >= 0x0605)
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 #endif
     wxInitAllImageHandlers();
 
     MyFrame* frame = new MyFrame("wxBorderlessFrame demo", wxPoint(50, 50), wxSize(640, 480));
-    frame->SetBorderThickness(1);
-    frame->SetBorderColour(wxColour(232, 17, 35));
     frame->SetDoubleBuffered(true);
     frame->Show(true);
     return true;
@@ -71,6 +96,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     , m_titlebarRightDown(false)
 {
     SetBackgroundColour(wxColour(255, 255, 255));
+    SetMinSize(FromDIP(wxSize(150, 500)));
+    SetBorderThickness(1);
+    SetBorderColour(wxColour(232, 17, 35));
 
     CreateStatusBar();
 
@@ -99,6 +127,19 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     m_btnSystemMenu->Bind(wxEVT_BUTTON, &MyFrame::OnOpenSystemMenu, this);
     m_btnDragMove->Bind(wxEVT_LEFT_DOWN, &MyFrame::OnStartDragMove, this);
     m_btnDragResize->Bind(wxEVT_LEFT_DOWN, &MyFrame::OnStartDragResize, this);
+    m_chkResizable->Bind(wxEVT_CHECKBOX, &MyFrame::OnWindowStyleChange, this);
+    m_chkMinimizeBox->Bind(wxEVT_CHECKBOX, &MyFrame::OnWindowStyleChange, this);
+    m_chkMaximizeBox->Bind(wxEVT_CHECKBOX, &MyFrame::OnWindowStyleChange, this);
+    m_chkCloseBox->Bind(wxEVT_CHECKBOX, &MyFrame::OnWindowStyleChange, this);
+    m_chkStayOnTop->Bind(wxEVT_CHECKBOX, &MyFrame::OnWindowStyleChange, this);
+    m_chkNoTaskbar->Bind(wxEVT_CHECKBOX, &MyFrame::OnWindowStyleChange, this);
+    m_spinBorderSize->Bind(wxEVT_SPINCTRL, &MyFrame::OnChangeBorderSize, this);
+    m_spinShadowSize->Bind(wxEVT_SPINCTRL, &MyFrame::OnChangeShadowSize, this);
+    m_spinShadowAlpha->Bind(wxEVT_SPINCTRL, &MyFrame::OnChangeShadowAlpha, this);
+    m_spinShadowX->Bind(wxEVT_SPINCTRL, &MyFrame::OnChangeShadowOffset, this);
+    m_spinShadowY->Bind(wxEVT_SPINCTRL, &MyFrame::OnChangeShadowOffset, this);
+    m_colBorder->Bind(wxEVT_COLOURPICKER_CHANGED, &MyFrame::OnChangeBorderColour, this);
+    m_chkShadowOnInactive->Bind(wxEVT_CHECKBOX, &MyFrame::OnChangeInactiveShadow, this);
 }
 
 wxWindowPart MyFrame::GetWindowPart(wxPoint mousePosition) const
@@ -132,23 +173,98 @@ void MyFrame::SetupGui()
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     sizer->AddSpacer(FromDIP(30));
 
-    wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* btnSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, "Functions");
     m_btnSystemMenu = new wxButton(this, wxID_ANY, "PopupSystemMenu");
-    btnSizer->Add(m_btnSystemMenu, 0, wxALL, FromDIP(10));
-    
     m_btnDragMove = new wxButton(this, wxID_ANY, "StartDragMove");
-    btnSizer->Add(m_btnDragMove, 0, wxALL, FromDIP(10));
-
     m_btnDragResize = new wxButton(this, wxID_ANY, "StartDragResize");
+    btnSizer->Add(m_btnSystemMenu, 0, wxALL, FromDIP(10));
+    btnSizer->Add(m_btnDragMove, 0, wxALL, FromDIP(10));
     btnSizer->Add(m_btnDragResize, 0, wxALL, FromDIP(10));
 
-    sizer->Add(btnSizer, 0, wxEXPAND);
+    sizer->Add(btnSizer, 0, wxEXPAND | wxALL, FromDIP(10));
+
+    wxBoxSizer* options = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* styleSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Window style");
+    m_chkResizable = new wxCheckBox(this, wxID_ANY, "wxRESIZE_BORDER");
+    m_chkMinimizeBox = new wxCheckBox(this, wxID_ANY, "wxMINIMIZE_BOX");
+    m_chkMaximizeBox = new wxCheckBox(this, wxID_ANY, "wxMAXIMIZE_BOX");
+    m_chkCloseBox = new wxCheckBox(this, wxID_ANY, "wxCLOSE_BOX");
+    m_chkStayOnTop = new wxCheckBox(this, wxID_ANY, "wxSTAY_ON_TOP");
+    m_chkNoTaskbar = new wxCheckBox(this, wxID_ANY, "wxFRAME_NO_TASKBAR");
+    styleSizer->Add(m_chkResizable, 0, wxLEFT | wxRIGHT, FromDIP(10));
+    styleSizer->Add(m_chkMinimizeBox, 0, wxLEFT | wxRIGHT, FromDIP(10));
+    styleSizer->Add(m_chkMaximizeBox, 0, wxLEFT | wxRIGHT, FromDIP(10));
+    styleSizer->Add(m_chkCloseBox, 0, wxLEFT | wxRIGHT, FromDIP(10));
+    styleSizer->Add(m_chkStayOnTop, 0, wxLEFT | wxRIGHT, FromDIP(10));
+    styleSizer->Add(m_chkNoTaskbar, 0, wxLEFT | wxRIGHT, FromDIP(10));
+    styleSizer->AddSpacer(FromDIP(5));
+
+    ReadWindowStyle();
+    options->Add(styleSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, FromDIP(10));
+
+    wxStaticBoxSizer* borderSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Border and shadow");
+    m_spinBorderSize = new wxSpinCtrl(this);
+    m_spinBorderSize->SetMin(0);
+    m_spinBorderSize->SetMax(10);
+    m_spinBorderSize->SetValue(GetBorderThickness());
+    m_spinShadowSize = new wxSpinCtrl(this);
+    m_spinShadowSize->SetMin(0);
+    m_spinShadowSize->SetMax(50);
+    m_spinShadowSize->SetValue(GetShadowSize());
+    m_spinShadowAlpha = new wxSpinCtrl(this);
+    m_spinShadowAlpha->SetMin(0);
+    m_spinShadowAlpha->SetMax(255);
+    m_spinShadowAlpha->SetValue(GetShadowAlpha());
+    m_spinShadowX = new wxSpinCtrl(this);
+    m_spinShadowX->SetMin(-16);
+    m_spinShadowX->SetMax(16);
+    m_spinShadowX->SetValue(GetShadowOffset().x);
+    m_spinShadowY = new wxSpinCtrl(this);
+    m_spinShadowY->SetMin(-16);
+    m_spinShadowY->SetMax(16);
+    m_spinShadowY->SetValue(GetShadowOffset().y);
+    m_colBorder = new wxColourPickerCtrl(this, wxID_ANY, GetBorderColour());
+    m_chkShadowOnInactive = new wxCheckBox(this, wxID_ANY, "No shadow if inactive");
+    m_chkShadowOnInactive->SetValue(IsShadowDisabledOnInactiveWindow());
+    borderSizer->Add(new wxStaticText(this, wxID_ANY, "Border thickness (px):"));
+    borderSizer->Add(m_spinBorderSize, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
+    borderSizer->Add(new wxStaticText(this, wxID_ANY, "Shadow size (px):"));
+    borderSizer->Add(m_spinShadowSize, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
+    borderSizer->Add(new wxStaticText(this, wxID_ANY, "Shadow alpha (0-255):"));
+    borderSizer->Add(m_spinShadowAlpha, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
+    borderSizer->Add(new wxStaticText(this, wxID_ANY, "Shadow X offset (px):"));
+    borderSizer->Add(m_spinShadowX, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
+    borderSizer->Add(new wxStaticText(this, wxID_ANY, "Shadow Y offset (px):"));
+    borderSizer->Add(m_spinShadowY, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
+    borderSizer->Add(new wxStaticText(this, wxID_ANY, "Border colour:"));
+    borderSizer->Add(m_colBorder, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
+    borderSizer->Add(m_chkShadowOnInactive, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
+
+    options->Add(borderSizer, 0, wxEXPAND | wxRIGHT | wxBOTTOM, FromDIP(10));
+
+    sizer->Add(options, 0, wxEXPAND);
 
     SetSizer(sizer);
 
-    m_titleFont.Create(13, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, 
-        wxFONTWEIGHT_BOLD, false, "Calibri");
+    m_titleFont = GetFont();
+    m_titleFont.SetPointSize(13);
     m_titleFont.MakeBold();
+}
+
+void MyFrame::ReadWindowStyle()
+{
+    long style = GetWindowStyle();
+    m_chkResizable->SetValue(style & wxRESIZE_BORDER);
+    m_chkMinimizeBox->SetValue(style & wxMINIMIZE_BOX);
+    m_chkMaximizeBox->SetValue(style & wxMAXIMIZE_BOX);
+    m_chkCloseBox->SetValue(style & wxCLOSE_BOX);
+    m_chkStayOnTop->SetValue(style & wxSTAY_ON_TOP);
+    m_chkNoTaskbar->SetValue(style & wxFRAME_NO_TASKBAR);
+}
+
+void MyFrame::RedrawTitlebar()
+{
+    RefreshRect(wxRect(0, 0, GetSize().x, m_buttons->GetTotalSize().y));
 }
 
 void MyFrame::OnPaint(wxPaintEvent& event)
@@ -206,7 +322,7 @@ void MyFrame::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
 
 void MyFrame::OnSize(wxSizeEvent& event)
 {
-    RefreshRect(wxRect(0, 0, event.GetSize().x, m_buttons->GetTotalSize().y));
+    RedrawTitlebar();
     event.Skip();
 }
 
@@ -223,4 +339,52 @@ void MyFrame::OnStartDragMove(wxMouseEvent& event)
 void MyFrame::OnStartDragResize(wxMouseEvent& event)
 {
     m_gripper.StartDragResize(this, static_cast<wxDirection>(wxNORTH | wxWEST));
+}
+
+void MyFrame::OnWindowStyleChange(wxCommandEvent& event)
+{
+    long styleMask = wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX 
+        | wxCLOSE_BOX | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR;
+
+    long newStyle = 0;
+    newStyle |= (m_chkResizable->GetValue()) ? wxRESIZE_BORDER : 0;
+    newStyle |= (m_chkMinimizeBox->GetValue()) ? wxMINIMIZE_BOX : 0;
+    newStyle |= (m_chkMaximizeBox->GetValue()) ? wxMAXIMIZE_BOX : 0;
+    newStyle |= (m_chkCloseBox->GetValue()) ? wxCLOSE_BOX : 0;
+    newStyle |= (m_chkStayOnTop->GetValue()) ? wxSTAY_ON_TOP : 0;
+    newStyle |= (m_chkNoTaskbar->GetValue()) ? wxFRAME_NO_TASKBAR : 0;
+
+    SetWindowStyle(newStyle | (GetWindowStyle() & ~(styleMask)));
+    m_buttons->UpdateState();
+}
+
+void MyFrame::OnChangeBorderSize(wxSpinEvent& event)
+{
+    SetBorderThickness(event.GetInt());
+}
+
+void MyFrame::OnChangeShadowSize(wxSpinEvent& event)
+{
+    SetShadowSize(event.GetInt());
+}
+
+void MyFrame::OnChangeShadowAlpha(wxSpinEvent& event)
+{
+    SetShadowAlpha(event.GetInt());
+}
+
+void MyFrame::OnChangeShadowOffset(wxSpinEvent& event)
+{
+    SetShadowOffset(wxPoint(m_spinShadowX->GetValue(), m_spinShadowY->GetValue()));
+}
+
+void MyFrame::OnChangeBorderColour(wxColourPickerEvent& event)
+{
+    SetBorderColour(event.GetColour());
+    RedrawTitlebar();
+}
+
+void MyFrame::OnChangeInactiveShadow(wxCommandEvent& event)
+{
+    SetShadowDisabledOnInactiveWindow(m_chkShadowOnInactive->GetValue());
 }

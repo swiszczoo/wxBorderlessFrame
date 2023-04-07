@@ -196,6 +196,7 @@ void wxDropShadowFrameBase::OnAttachedActivate(wxActivateEvent& evnt)
 
 void wxDropShadowFrameBase::OnAttachedDestroy(wxWindowDestroyEvent& evnt)
 {
+    DetachFromWindow();
     Destroy();
     evnt.Skip();
 }
@@ -360,8 +361,9 @@ wxByte wxDropShadowFrameBase::GetShadowIntensity(int x, int y, wxSize windowSize
 
     wxRect windowRect(-x, -y, windowSize.x, windowSize.y);
     wxRect normalized = NormalizeRect(windowRect);
-
-    return static_cast<wxByte>(GetRangeSum(normalized) * m_currentShadowAlpha);
+    
+    wxByte intensity = static_cast<wxByte>(GetRangeSum(normalized) * m_currentShadowAlpha);
+    return (intensity > 1) ? intensity : 1;
 }
 
 wxRect wxDropShadowFrameBase::NormalizeRect(const wxRect& rect) const

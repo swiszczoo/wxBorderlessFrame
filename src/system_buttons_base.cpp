@@ -75,6 +75,11 @@ wxWindowPart wxSystemButtonsBase::GetWindowPart(wxPoint mousePos) const
     return wxWP_CLIENT_AREA;
 }
 
+void wxSystemButtonsBase::UpdateState()
+{
+    UpdateSystemButtons();
+}
+
 void wxSystemButtonsBase::OnDestroy(wxWindowDestroyEvent& evnt)
 {
     delete this;

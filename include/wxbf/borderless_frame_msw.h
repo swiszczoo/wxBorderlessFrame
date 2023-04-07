@@ -51,6 +51,46 @@ public:
         return m_borderThickness;
     }
 
+    wxByte GetShadowAlpha() const
+    {
+        return m_shadow[0]->GetShadowAlpha();
+    }
+
+    void SetShadowAlpha(wxByte newAlpha)
+    {
+        for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetShadowAlpha(newAlpha);
+    }
+
+    int GetShadowSize() const
+    {
+        return m_shadow[0]->GetShadowSize();
+    }
+
+    void SetShadowSize(int shadowSize)
+    {
+        for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetShadowSize(shadowSize);
+    }
+
+    wxPoint GetShadowOffset() const
+    {
+        return m_shadow[0]->GetShadowOffset();
+    }
+
+    void SetShadowOffset(wxPoint newOffset)
+    {
+        for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetShadowOffset(newOffset);
+    }
+
+    bool IsShadowDisabledOnInactiveWindow() const
+    {
+        return m_shadow[0]->IsDisableShadowOnInactiveWindow();
+    }
+
+    void SetShadowDisabledOnInactiveWindow(bool disable)
+    {
+        for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetDisableShadowOnInactiveWindow(disable);
+    }
+
     void PopupSystemMenu();
 
     virtual WXLRESULT MSWWindowProc(WXUINT message,
