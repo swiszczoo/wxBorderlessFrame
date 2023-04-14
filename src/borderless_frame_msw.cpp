@@ -129,8 +129,12 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
         wxWindowDC dc(this);
 
         if (IsMaximized()) {
-            // It must be called here, otherwise Aero Snap suddenly stops working
-            // If it draws something we do not want, use ExcludeClipRect or something
+            // It must be called here, otherwise Aero Snap suddenly stops working,
+            // at least on Win10, because it uses some kind of a global state 
+            // (great job whoever wrote the default NCPAINT handler)
+            // If it starts drawing something we don't want, 
+            // we may use ExcludeClipRect or something else to prevent it
+
             return wxFrame::MSWWindowProc(message, wParam, lParam);
         }
 

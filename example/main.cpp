@@ -47,6 +47,7 @@ private:
     wxSpinCtrl* m_spinShadowY;
     wxColourPickerCtrl* m_colBorder;
     wxCheckBox* m_chkShadowOnInactive;
+    wxColourPickerCtrl* m_colMatrix[4][5][2];
 
     bool m_titlebarRightDown;
 
@@ -95,14 +96,14 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxBorderlessFrame(NULL, wxID_ANY, title, pos, size)
     , m_titlebarRightDown(false)
 {
-    SetBackgroundColour(wxColour(255, 255, 255));
+    SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     SetMinSize(FromDIP(wxSize(150, 500)));
     SetBorderThickness(1);
     SetBorderColour(wxColour(232, 17, 35));
 
     CreateStatusBar();
 
-    static const int statusWidths[] = {-1, 150};
+    static const int statusWidths[] = { -1, 150 };
     GetStatusBar()->SetFieldsCount(2, statusWidths);
 
     SetStatusText("Welcome to wxBorderlessFrame!", 0);
@@ -110,9 +111,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     CenterOnScreen();
 
     m_buttons = wxSystemButtonsFactory::CreateSystemButtons(this);
-    m_buttons->SetColourTableEntry(wxSB_CLOSE, wxSB_STATE_NORMAL, 
-        wxSB_COLOUR_FOREGROUND, wxColour(232, 17, 35));
-    
+
     SetupGui();
 
     // Event bindings
@@ -140,6 +139,21 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     m_spinShadowY->Bind(wxEVT_SPINCTRL, &MyFrame::OnChangeShadowOffset, this);
     m_colBorder->Bind(wxEVT_COLOURPICKER_CHANGED, &MyFrame::OnChangeBorderColour, this);
     m_chkShadowOnInactive->Bind(wxEVT_CHECKBOX, &MyFrame::OnChangeInactiveShadow, this);
+    for (size_t colourKind = 0; colourKind < 2; ++colourKind) {
+        for (size_t buttonKind = 0; buttonKind < 4; ++buttonKind) {
+            for (size_t stateKind = 0; stateKind < 5; ++stateKind) {
+                m_colMatrix[buttonKind][stateKind][colourKind]->Bind(
+                    wxEVT_COLOURPICKER_CHANGED, [this, colourKind, buttonKind, stateKind](wxColourPickerEvent& event) {
+                        m_buttons->SetColourTableEntry(
+                            static_cast<wxSystemButton>(buttonKind),
+                            static_cast<wxSystemButtonState>(stateKind),
+                            static_cast<wxSystemButtonColourKind>(colourKind),
+                            event.GetColour());
+                        m_buttons->UpdateState();
+                    });
+            }
+        }
+    }
 }
 
 wxWindowPart MyFrame::GetWindowPart(wxPoint mousePosition) const
@@ -181,7 +195,7 @@ void MyFrame::SetupGui()
     btnSizer->Add(m_btnDragMove, 0, wxALL, FromDIP(10));
     btnSizer->Add(m_btnDragResize, 0, wxALL, FromDIP(10));
 
-    sizer->Add(btnSizer, 0, wxEXPAND | wxALL, FromDIP(10));
+    sizer->Add(btnSizer, 0, wxALIGN_CENTRE | wxALL, FromDIP(10));
 
     wxBoxSizer* options = new wxBoxSizer(wxHORIZONTAL);
     wxStaticBoxSizer* styleSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Window style");
@@ -241,13 +255,52 @@ void MyFrame::SetupGui()
     borderSizer->Add(m_chkShadowOnInactive, 0, wxEXPAND | wxBOTTOM, FromDIP(2));
 
     options->Add(borderSizer, 0, wxEXPAND | wxRIGHT | wxBOTTOM, FromDIP(10));
+    sizer->Add(options, 0, wxALIGN_CENTRE);
 
-    sizer->Add(options, 0, wxEXPAND);
+    wxStaticBoxSizer* matrixBoxSizer = new wxStaticBoxSizer(wxVERTICAL, this, "System menu color matrix");
+    wxFlexGridSizer* matrixSizer = new wxFlexGridSizer(6, FromDIP(wxSize(4, 4)));
+    matrixSizer->AddSpacer(0);
+    matrixSizer->Add(new wxStaticText(this, wxID_ANY, "Inactive"));
+    matrixSizer->Add(new wxStaticText(this, wxID_ANY, "Disabled"));
+    matrixSizer->Add(new wxStaticText(this, wxID_ANY, "Normal"));
+    matrixSizer->Add(new wxStaticText(this, wxID_ANY, "Hover"));
+    matrixSizer->Add(new wxStaticText(this, wxID_ANY, "Pressed"));
 
-    SetSizer(sizer);
+    static const wxString BTN_LABELS[] = {
+        "Minimize BG",
+        "Maximize BG",
+        "Restore BG",
+        "Close BG",
+        "Minimize FG",
+        "Maximize FG",
+        "Restore FG",
+        "Close FG",
+    };
+
+    int labelIdx = 0;
+    for (size_t colourKind = 0; colourKind < 2; ++colourKind) {
+        for (size_t buttonKind = 0; buttonKind < 4; ++buttonKind) {
+            matrixSizer->Add(new wxStaticText(this, wxID_ANY, BTN_LABELS[labelIdx++]));
+
+            for (size_t stateKind = 0; stateKind < 5; ++stateKind) {
+                m_colMatrix[buttonKind][stateKind][colourKind] = new wxColourPickerCtrl(
+                    this, wxID_ANY, m_buttons->GetColourTableEntry(
+                        static_cast<wxSystemButton>(buttonKind),
+                        static_cast<wxSystemButtonState>(stateKind),
+                        static_cast<wxSystemButtonColourKind>(colourKind)));
+                matrixSizer->Add(m_colMatrix[buttonKind][stateKind][colourKind]);
+            }
+        }
+    }
+
+    matrixBoxSizer->Add(matrixSizer, 0, wxLEFT | wxRIGHT | wxBOTTOM, FromDIP(10));
+    sizer->Add(matrixBoxSizer, 0, wxALIGN_CENTRE | wxLEFT | wxRIGHT | wxBOTTOM, FromDIP(10));
+
+    SetSizerAndFit(sizer);
+    SetMinSize(wxSize(-1, -1)); // disable min size
 
     m_titleFont = GetFont();
-    m_titleFont.SetPointSize(13);
+    m_titleFont.SetPointSize(12);
     m_titleFont.MakeBold();
 }
 
@@ -343,7 +396,7 @@ void MyFrame::OnStartDragResize(wxMouseEvent& event)
 
 void MyFrame::OnWindowStyleChange(wxCommandEvent& event)
 {
-    long styleMask = wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX 
+    long styleMask = wxRESIZE_BORDER | wxMINIMIZE_BOX | wxMAXIMIZE_BOX
         | wxCLOSE_BOX | wxSTAY_ON_TOP | wxFRAME_NO_TASKBAR;
 
     long newStyle = 0;
