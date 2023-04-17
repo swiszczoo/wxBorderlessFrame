@@ -177,6 +177,7 @@
     <ClCompile Include="src\system_buttons_fallback.cpp" />
     <ClCompile Include="src\system_buttons_win10.cpp" />
     <ClCompile Include="src\system_menu_png.cpp" />
+    <ClCompile Include="src\window_gripper.cpp" />
     <ClCompile Include="src\window_gripper_msw.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

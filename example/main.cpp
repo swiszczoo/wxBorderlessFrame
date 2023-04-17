@@ -28,7 +28,7 @@ protected:
     virtual wxWindowPart GetWindowPart(wxPoint mousePosition) const wxOVERRIDE;
 
 private:
-    wxWindowGripperMSW m_gripper;
+    std::unique_ptr<wxWindowGripper> m_gripper;
     wxFont m_titleFont;
     wxSystemButtonsBase* m_buttons;
     wxButton* m_btnSystemMenu;
@@ -95,6 +95,7 @@ bool MyApp::OnInit()
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     : wxBorderlessFrame(NULL, wxID_ANY, title, pos, size)
     , m_titlebarRightDown(false)
+    , m_gripper(wxWindowGripper::Create())
 {
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
     SetMinSize(FromDIP(wxSize(150, 500)));
@@ -386,12 +387,12 @@ void MyFrame::OnOpenSystemMenu(wxCommandEvent& event)
 
 void MyFrame::OnStartDragMove(wxMouseEvent& event)
 {
-    m_gripper.StartDragMove(this);
+    m_gripper->StartDragMove(this);
 }
 
 void MyFrame::OnStartDragResize(wxMouseEvent& event)
 {
-    m_gripper.StartDragResize(this, static_cast<wxDirection>(wxNORTH | wxWEST));
+    m_gripper->StartDragResize(this, static_cast<wxDirection>(wxNORTH | wxWEST));
 }
 
 void MyFrame::OnWindowStyleChange(wxCommandEvent& event)
