@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        system_buttons_base.cpp
+// Purpose:     wxSystemButtonsBase
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-27
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #include <wxbf/borderless_frame.h>
 #include <wxbf/system_buttons_base.h>
 

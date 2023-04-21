@@ -1,4 +1,13 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        borderless_frame_base.cpp
+// Purpose:     wxBorderlessFrame event definitions
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-29
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #include <wxbf/borderless_frame_base.h>
 
 wxDEFINE_EVENT(wxEVT_UPDATE_SYSTEM_BUTTONS, wxCommandEvent);

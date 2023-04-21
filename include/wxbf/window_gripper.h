@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/window_gripper.h
+// Purpose:     wxWindowGripper abstract class
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2022-12-29
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_WINDOW_GRIPPER_H_
+#define _WXBF_WINDOW_GRIPPER_H_
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -12,3 +24,5 @@ public:
     virtual bool StartDragMove(wxWindow* window) = 0;
     virtual bool StartDragResize(wxWindow* window, wxDirection which) = 0;
 };
+
+#endif

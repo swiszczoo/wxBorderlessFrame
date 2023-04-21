@@ -1,4 +1,13 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        system_buttons.cpp
+// Purpose:     wxSystemButtonsFactory
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-27
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #include "system_menu_png.h"
 
 #include <wxbf/system_buttons.h>

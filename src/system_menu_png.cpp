@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        system_menu_png.cpp
+// Purpose:     Bitmap for system buttons fallback implementation
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-04-05
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #include "system_menu_png.h"
 
 const uint8_t SYSTEM_MENU_DATA[]  = {

@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/system_buttons_base.h
+// Purpose:     wxSystemButtonsBase class
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-27
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_SYSTEM_BUTTONS_BASE_H_
+#define _WXBF_SYSTEM_BUTTONS_BASE_H_
+
 #include "borderless_frame_base.h"
 #include "borderless_frame_common.h"
 
@@ -96,3 +108,5 @@ private:
         }
     }
 };
+
+#endif

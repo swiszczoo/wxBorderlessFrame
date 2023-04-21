@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        system_buttons_fallback.cpp
+// Purpose:     wxSystemButtons fallback implementation
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-04-05
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #include <wxbf/system_buttons_fallback.h>
 
 #include <wx/mstream.h>

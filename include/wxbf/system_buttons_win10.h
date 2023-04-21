@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/system_buttons_win10.h
+// Purpose:     wxSystemButtons implementation for Windows 10+
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-27
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_SYSTEM_BUTTONS_WIN10_H_
+#define _WXBF_SYSTEM_BUTTONS_WIN10_H_
+
 #include "borderless_frame_common.h"
 #include "system_buttons_base.h"
 
@@ -27,3 +39,5 @@ private:
 
     void InitColourTable();
 };
+
+#endif

@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/system_buttons.h
+// Purpose:     wxSystemButtonsFactory
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-27
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_SYSTEM_BUTTONS_H_
+#define _WXBF_SYSTEM_BUTTONS_H_
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -12,3 +24,5 @@ class BFDLLEXPORT wxSystemButtonsFactory {
 public:
     static wxSystemButtonsBase* CreateSystemButtons(wxBorderlessFrameBase* frame);
 };
+
+#endif

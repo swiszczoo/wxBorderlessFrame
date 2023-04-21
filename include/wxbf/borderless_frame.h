@@ -1,4 +1,15 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/borderless_frame.h
+// Purpose:     Includes and typedefs the correct wxBorderlessframe implementation
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2022-12-26
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_BORDERLESS_FRAME_H_
+#define _WXBF_BORDERLESS_FRAME_H_
 
 #ifdef _WIN32
 
@@ -8,5 +19,7 @@ typedef wxBorderlessFrameMSW wxBorderlessFrame;
 #else
 
 #error "This implementation is currently only available for MSW"
+
+#endif
 
 #endif

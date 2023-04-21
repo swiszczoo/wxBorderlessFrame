@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/drop_shadow_frame_base.h
+// Purpose:     wxDropShadowFrameBase class
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2022-12-27
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_DROP_SHADOW_FRAME_BASE_H_
+#define _WXBF_DROP_SHADOW_FRAME_BASE_H_
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -112,3 +124,5 @@ private:
     double GetRangeSum(const wxRect& rect) const;
     wxPoint GetWindowOffset(const wxSize& windowSize) const;
 };
+
+#endif

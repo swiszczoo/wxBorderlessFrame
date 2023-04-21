@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        borderless_frame_msw.cpp
+// Purpose:     wxBorderlessFrame implementation for MSW
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2022-12-26
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #ifdef _WIN32
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "uxtheme.lib")
@@ -139,6 +149,7 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
         }
 
         if (m_borderThickness > 0) {
+            ::SelectClipRgn(dc.GetHDC(), NULL);
             dc.SetBrush(*wxTRANSPARENT_BRUSH);
             dc.SetPen(wxPen(m_borderColour, m_borderThickness));
 
@@ -243,12 +254,12 @@ void wxBorderlessFrameMSW::UpdateTheme()
     }
 
     if (desiredTheme) {
-        SetWindowTheme(GetHWND(), NULL, NULL);
+        ::SetWindowTheme(GetHWND(), NULL, NULL);
         UpdateNcArea();
         RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
     }
     else {
-        SetWindowTheme(GetHWND(), L"", L"");
+        ::SetWindowTheme(GetHWND(), L"", L"");
         UpdateNcArea();
         RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
     }

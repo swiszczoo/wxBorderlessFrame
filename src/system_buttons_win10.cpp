@@ -1,9 +1,19 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        system_buttons_win10.cpp
+// Purpose:     wxSystemButtons implementation for Windows 10+
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-27
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 #include <wxbf/system_buttons_win10.h>
 
 const wxString wxWin10SystemButtons::ICON_FAMILY_NAME = "Segoe MDL2 Assets";
 
 const wchar_t wxWin10SystemButtons::ICON_MINIMIZE = L'\xE921'; // ChromeMinimize
-const wchar_t wxWin10SystemButtons::ICON_MAXIMIZE = L'\xE922';// ChromeMaximize
+const wchar_t wxWin10SystemButtons::ICON_MAXIMIZE = L'\xE922'; // ChromeMaximize
 const wchar_t wxWin10SystemButtons::ICON_RESTORE = L'\xE923'; // ChromeRestore
 const wchar_t wxWin10SystemButtons::ICON_CLOSE = L'\xE8BB'; // ChromeClose
 
@@ -52,9 +62,7 @@ void wxWin10SystemButtons::DrawButton(wxDC& dc, wxSystemButton which,
 
     // Draw icons twice because they're much clearer
     dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
-    if (which != wxSB_CLOSE || state != wxSB_STATE_HOVER && state != wxSB_STATE_PRESSED) {
-        dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
-    }
+    dc.DrawText(text, wxRect(extent).CenterIn(rect).GetTopLeft());
 }
 
 void wxWin10SystemButtons::InitColourTable()

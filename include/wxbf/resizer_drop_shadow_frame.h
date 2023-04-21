@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/resizer_drop_shadow_frame.h
+// Purpose:     Connects wxDropShadowFrame with wxWindowGripper
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2022-12-29
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_RESIZER_DROP_SHADOW_FRAME_H_
+#define _WXBF_RESIZER_DROP_SHADOW_FRAME_H_
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -166,3 +178,5 @@ private:
         }
     }
 };
+
+#endif

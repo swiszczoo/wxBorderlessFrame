@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/system_buttons_fallback.h
+// Purpose:     wxSystemButtons fallback implementation (platform-independent)
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-04-05
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_SYSTEM_BUTTONS_FALLBACK_H_
+#define _WXBF_SYSTEM_BUTTONS_FALLBACK_H_
+
 #include "borderless_frame_common.h"
 #include "system_buttons_base.h"
 
@@ -26,3 +38,5 @@ private:
     void TintButtonBitmap(wxBitmap& out, int index, 
         wxCoord dimension, wxColour foregroundColour);
 };
+
+#endif

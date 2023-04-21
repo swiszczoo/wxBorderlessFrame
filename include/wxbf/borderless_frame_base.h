@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/borderless_frame_base.h
+// Purpose:     wxBorderlessFrameBase class
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2023-03-29
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_BORDERLESS_FRAME_BASE_H_
+#define _WXBF_BORDERLESS_FRAME_BASE_H_
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -37,3 +49,5 @@ public:
 
     virtual void RunSystemCommand(wxSystemCommand command) = 0;
 };
+
+#endif

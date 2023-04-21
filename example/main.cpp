@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        example/main.cpp
+// Purpose:     Example usage of wxBorderlessFrame
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2022-12-26
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
 // wxWidgets "Hello world" Program
 // modified to show the usage of wxBorderlessFrame
 
@@ -87,7 +97,7 @@ bool MyApp::OnInit()
     wxInitAllImageHandlers();
 
     MyFrame* frame = new MyFrame("wxBorderlessFrame demo", wxPoint(50, 50), wxSize(640, 480));
-    frame->SetDoubleBuffered(true);
+    //frame->SetDoubleBuffered(true);
     frame->Show(true);
     return true;
 }

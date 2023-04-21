@@ -1,4 +1,16 @@
-#pragma once
+/////////////////////////////////////////////////////////////////////////////
+// Name:        wxbf/borderless_frame_msw.h
+// Purpose:     wxBorderlessFrame implementation for MSW
+// Author:      £ukasz Œwiszcz
+// Modified by:
+// Created:     2022-12-26
+// Copyright:   (c) £ukasz Œwiszcz
+// Licence:     wxWindows licence
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _WXBF_BORDERLESS_FRAME_MSW_H_
+#define _WXBF_BORDERLESS_FRAME_MSW_H_
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -122,3 +134,5 @@ private:
     WXLRESULT HandleNcMessage(WXUINT message, WXWPARAM wParam, WXLPARAM lParam); 
     void TrackNcLeave();
 };
+
+#endif
