@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        borderless_frame_base.cpp
 // Purpose:     wxBorderlessFrame event definitions
-// Author:      £ukasz åwiszcz
+// Author:      ≈Åukasz ≈öwiszcz
 // Modified by:
 // Created:     2023-03-29
-// Copyright:   (c) £ukasz åwiszcz
+// Copyright:   (c) ≈Åukasz ≈öwiszcz
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

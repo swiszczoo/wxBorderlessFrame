@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        window_gripper.cpp
 // Purpose:     wxWindowGripper factory
-// Author:      £ukasz åwiszcz
+// Author:      ≈Åukasz ≈öwiszcz
 // Modified by:
 // Created:     2022-04-17
-// Copyright:   (c) £ukasz åwiszcz
+// Copyright:   (c) ≈Åukasz ≈öwiszcz
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

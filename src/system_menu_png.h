@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        system_menu_png.h
 // Purpose:     Externs that contain the bitmap for fallback system buttons
-// Author:      £ukasz åwiszcz
+// Author:      ≈Åukasz ≈öwiszcz
 // Modified by:
 // Created:     2023-04-05
-// Copyright:   (c) £ukasz åwiszcz
+// Copyright:   (c) ≈Åukasz ≈öwiszcz
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

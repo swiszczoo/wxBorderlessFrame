@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wxbf/drop_shadow_frame_msw.h
 // Purpose:     wxDropShadowFrame implementation for MSW
-// Author:      £ukasz åwiszcz
+// Author:      ≈Åukasz ≈öwiszcz
 // Modified by:
 // Created:     2022-12-27
-// Copyright:   (c) £ukasz åwiszcz
+// Copyright:   (c) ≈Åukasz ≈öwiszcz
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 

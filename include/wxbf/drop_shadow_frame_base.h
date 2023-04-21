@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        wxbf/drop_shadow_frame_base.h
 // Purpose:     wxDropShadowFrameBase class
-// Author:      £ukasz åwiszcz
+// Author:      ≈Åukasz ≈öwiszcz
 // Modified by:
 // Created:     2022-12-27
-// Copyright:   (c) £ukasz åwiszcz
+// Copyright:   (c) ≈Åukasz ≈öwiszcz
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
