@@ -19,6 +19,14 @@
 #include <wx/msw/private.h>
 #include <Uxtheme.h>
 
+// This undocumented messages are drawing garbage
+#ifndef WM_NCUAHDRAWCAPTION
+#define WM_NCUAHDRAWCAPTION (0x00AE)
+#endif
+#ifndef WM_NCUAHDRAWFRAME
+#define WM_NCUAHDRAWFRAME (0x00AF)
+#endif
+
 wxBorderlessFrameMSW::wxBorderlessFrameMSW(wxWindow* parent,
     wxWindowID id, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style, const wxString& name)
@@ -164,6 +172,9 @@ WXLRESULT wxBorderlessFrameMSW::MSWWindowProc(WXUINT message, WXWPARAM wParam, W
 
         return 0;
     }
+    case WM_NCUAHDRAWCAPTION:
+    case WM_NCUAHDRAWFRAME:
+        return 0;
     case WM_NCLBUTTONDOWN:
     case WM_NCLBUTTONUP:
     case WM_NCRBUTTONDOWN:
