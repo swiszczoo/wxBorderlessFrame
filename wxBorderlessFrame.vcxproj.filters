@@ -88,5 +88,8 @@
     <ClCompile Include="src\system_buttons_fallback.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="src\window_gripper.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
