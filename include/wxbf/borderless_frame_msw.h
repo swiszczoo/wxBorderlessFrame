@@ -129,6 +129,7 @@ private:
     void UpdateTheme();
 
     void OnMaximize(wxMaximizeEvent& evnt);
+    void OnIconize(wxIconizeEvent& evnt);
     void OnSize(wxSizeEvent& evnt);
 
     WXLRESULT HandleNcMessage(WXUINT message, WXWPARAM wParam, WXLPARAM lParam); 

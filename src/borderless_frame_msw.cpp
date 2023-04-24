@@ -60,6 +60,7 @@ bool wxBorderlessFrameMSW::Create(wxWindow* parent,
     m_leaveTrackArmed = false;
 
     Bind(wxEVT_MAXIMIZE, &wxBorderlessFrameMSW::OnMaximize, this);
+    Bind(wxEVT_ICONIZE, &wxBorderlessFrameMSW::OnIconize, this);
     Bind(wxEVT_SIZE, &wxBorderlessFrameMSW::OnSize, this);
 
     return true;
@@ -281,6 +282,18 @@ void wxBorderlessFrameMSW::UpdateTheme()
 void wxBorderlessFrameMSW::OnMaximize(wxMaximizeEvent& evnt)
 {
     UpdateTheme();
+    evnt.Skip();
+}
+
+void wxBorderlessFrameMSW::OnIconize(wxIconizeEvent& evnt)
+{
+    if (!evnt.IsIconized() && IsMaximized()) {
+        RECT rect;
+        AdjustMaximizedClientRect(GetHWND(), rect);
+        ::SetWindowPos(GetHWND(), NULL, rect.left, rect.top, 
+            rect.right - rect.left, rect.bottom - rect.top, SWP_NOSENDCHANGING | SWP_NOZORDER);
+    }
+
     evnt.Skip();
 }
 
