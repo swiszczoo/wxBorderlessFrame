@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxDropShadowFrameBase class.
+ */
+
 #ifndef _WXBF_DROP_SHADOW_FRAME_BASE_H_
 #define _WXBF_DROP_SHADOW_FRAME_BASE_H_
 

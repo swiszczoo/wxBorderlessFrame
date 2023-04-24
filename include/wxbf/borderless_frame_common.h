@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief Macros for exporting DLL API for MSVC.
+ */
+
 #ifndef _WXBF_BORDERLESS_FRAME_COMMON_H_
 #define _WXBF_BORDERLESS_FRAME_COMMON_H_
 

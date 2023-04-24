@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxBorderlessFrame implementation for MSW.
+ */
+
 #ifndef _WXBF_BORDERLESS_FRAME_MSW_H_
 #define _WXBF_BORDERLESS_FRAME_MSW_H_
 

@@ -8,6 +8,12 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief Typedefs correct implementation of wxDropShadowFrame for the current
+ *        platform.
+ */
+
 #ifndef _WXBF_DROP_SHADOW_FRAME_H_
 #define _WXBF_DROP_SHADOW_FRAME_H_
 

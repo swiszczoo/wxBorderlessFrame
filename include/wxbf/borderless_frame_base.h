@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxBorderlessFrameBase class.
+ */
+
 #ifndef _WXBF_BORDERLESS_FRAME_BASE_H_
 #define _WXBF_BORDERLESS_FRAME_BASE_H_
 

@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxSystemButtonsBase class.
+ */
+
 #ifndef _WXBF_SYSTEM_BUTTONS_BASE_H_
 #define _WXBF_SYSTEM_BUTTONS_BASE_H_
 

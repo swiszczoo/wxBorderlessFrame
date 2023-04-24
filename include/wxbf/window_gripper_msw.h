@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxWindowGripper implementation for MSW.
+ */
+
 #ifndef _WXBF_WINDOW_GRIPPER_MSW_H_
 #define _WXBF_WINDOW_GRIPPER_MSW_H_
 

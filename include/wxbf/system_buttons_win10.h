@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxSystemButtonsBase implementation for Windows 10+.
+ */
+
 #ifndef _WXBF_SYSTEM_BUTTONS_WIN10_H_
 #define _WXBF_SYSTEM_BUTTONS_WIN10_H_
 

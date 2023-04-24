@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxDropShadowFrameBase implementation for MSW.
+ */
+
 #ifndef _WXBF_DROP_SHADOW_FRAME_MSW_H_
 #define _WXBF_DROP_SHADOW_FRAME_MSW_H_
 

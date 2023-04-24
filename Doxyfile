@@ -124,7 +124,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = src \
                          include \
-                         include/wxbf
+                         include/wxbf \
+                         doc/md
 INPUT_ENCODING         = UTF-8
 INPUT_FILE_ENCODING    =
 FILE_PATTERNS          = *.c \

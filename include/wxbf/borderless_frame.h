@@ -8,6 +8,12 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief Typedefs correct implementation of wxBorderlessFrame for the current
+ *        platform.
+ */
+
 #ifndef _WXBF_BORDERLESS_FRAME_H_
 #define _WXBF_BORDERLESS_FRAME_H_
 

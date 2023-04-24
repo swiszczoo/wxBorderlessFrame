@@ -8,6 +8,12 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxResizerDropShadowFrame template class which connects 
+ *        wxDropShadowFrame with wxWindowGripper.
+ */
+
 #ifndef _WXBF_RESIZER_DROP_SHADOW_FRAME_H_
 #define _WXBF_RESIZER_DROP_SHADOW_FRAME_H_
 

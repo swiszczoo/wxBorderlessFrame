@@ -8,6 +8,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \file
+ * \brief wxSystemButtonsBase fallback implementation (platform-independent).
+ */
+
 #ifndef _WXBF_SYSTEM_BUTTONS_FALLBACK_H_
 #define _WXBF_SYSTEM_BUTTONS_FALLBACK_H_
 
