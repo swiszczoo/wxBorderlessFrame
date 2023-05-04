@@ -419,7 +419,6 @@ void MyFrame::OnWindowStyleChange(wxCommandEvent& event)
     newStyle |= (m_chkNoTaskbar->GetValue()) ? wxFRAME_NO_TASKBAR : 0;
 
     SetWindowStyle(newStyle | (GetWindowStyle() & ~(styleMask)));
-    m_buttons->UpdateState();
 }
 
 void MyFrame::OnChangeBorderSize(wxSpinEvent& event)

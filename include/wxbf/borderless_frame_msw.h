@@ -116,6 +116,8 @@ public:
 
     virtual void RunSystemCommand(wxSystemCommand command) wxOVERRIDE;
 
+    void SetWindowStyleFlag(long style) wxOVERRIDE;
+
 protected:
     virtual wxWindowPart GetWindowPart(wxPoint mousePosition) const;
 

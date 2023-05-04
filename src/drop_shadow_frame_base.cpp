@@ -172,7 +172,7 @@ void wxDropShadowFrameBase::OnAttachedMinimize(wxIconizeEvent& evnt)
     if (evnt.IsIconized()) {
         Hide();
     }
-    else {
+    else if (m_attachedFrame && !m_attachedFrame->IsMaximized()) {
         Show();
         StartFadeIn();
         RepositionFrame();

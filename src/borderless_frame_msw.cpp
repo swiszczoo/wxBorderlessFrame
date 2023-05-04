@@ -221,6 +221,18 @@ void wxBorderlessFrameMSW::RunSystemCommand(wxSystemCommand command)
     }
 }
 
+void wxBorderlessFrameMSW::SetWindowStyleFlag(long style)
+{
+    long oldStyle = GetWindowStyleFlag();
+    static const long MASK = wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxMAXIMIZE | wxCLOSE_BOX;
+
+    wxFrame::SetWindowStyleFlag(style);
+
+    if ((oldStyle & MASK) != (style & MASK)) {
+        wxPostEvent(this, wxCommandEvent(wxEVT_UPDATE_SYSTEM_BUTTONS));
+    }
+}
+
 void wxBorderlessFrameMSW::UpdateNcArea()
 {
     ::SetWindowPos(GetHWND(), nullptr, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
@@ -268,12 +280,12 @@ void wxBorderlessFrameMSW::UpdateTheme()
     if (desiredTheme) {
         ::SetWindowTheme(GetHWND(), NULL, NULL);
         UpdateNcArea();
-        RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
+        ::RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
     }
     else {
         ::SetWindowTheme(GetHWND(), L"", L"");
         UpdateNcArea();
-        RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
+        ::RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
     }
 
     m_maximizedTheme = desiredTheme;
@@ -291,7 +303,9 @@ void wxBorderlessFrameMSW::OnIconize(wxIconizeEvent& evnt)
         RECT rect;
         AdjustMaximizedClientRect(GetHWND(), rect);
         ::SetWindowPos(GetHWND(), NULL, rect.left, rect.top, 
-            rect.right - rect.left, rect.bottom - rect.top, SWP_NOSENDCHANGING | SWP_NOZORDER);
+            rect.right - rect.left, rect.bottom - rect.top, 
+            SWP_NOSENDCHANGING | SWP_NOZORDER);
+        ::RedrawWindow(GetHWND(), NULL, NULL, RDW_FRAME | RDW_UPDATENOW);
     }
 
     evnt.Skip();
