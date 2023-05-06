@@ -19,8 +19,23 @@
 #include "borderless_frame_common.h"
 #include "system_buttons_base.h"
 
+/**
+ * \brief A class that provides fallback implementation of wxSystemButtonsBase.
+ * 
+ * This implementation is completely platform-independent as it makes use of the
+ * bitmap icons embedded into the library. You can still customize all the
+ * colors by simply calling SetColourTableEntry().
+ */
 class BFDLLEXPORT wxFallbackSystemButtons : public wxSystemButtonsBase {
 public:
+    /**
+     * \brief Creates a wxFallbackSystemButtons instance for the provided
+     *        frame using passed bitmap data.
+     * 
+     * \param frame a borderlessframe to create the system buttons for
+     * \param bitmapData pointer to a PNG atlas containing system icons
+     * \param size size of the passed PNG data
+     */
     explicit wxFallbackSystemButtons(wxBorderlessFrameBase* frame, 
         const void* bitmapData, size_t size);
 

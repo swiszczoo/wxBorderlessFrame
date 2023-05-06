@@ -37,7 +37,7 @@ public:
      *        and drags on its titlebar.
      * 
      * \param window the window to start moving
-     * \return true, if the command was successfully processed
+     * \return `true`, if the command was successfully processed
      */
     virtual bool StartDragMove(wxWindow* window) = 0;
 
@@ -47,16 +47,16 @@ public:
      *
      * \param window the window to start resizing
      * \param which the direction of resizing, may be a combination of
-     *              multiple values, e.g. (wxTOP | wxLEFT)
-     * \return true, if the command was successfully processed
+     *              multiple values, e.g. (`wxTOP | wxLEFT`)
+     * \return `true`, if the command was successfully processed
      */
     virtual bool StartDragResize(wxWindow* window, wxDirection which) = 0;
 
     /**
      * \brief Creates a new platform-specific instance of wxWindowGripper.
      * 
-     * \return A pointer to the newly created wxWindowGripper instance. The
-     *         caller takes ownership of the pointer and must explicitly free 
+     * \return a pointer to the newly created wxWindowGripper instance. The
+     *         caller takes ownership of the pointer and **must** explicitly free 
      *         it when it is no longer required.
      */
     static wxWindowGripper* Create();

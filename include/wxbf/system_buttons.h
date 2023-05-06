@@ -25,8 +25,22 @@
 #include "borderless_frame_common.h"
 #include "system_buttons_base.h"
 
-class BFDLLEXPORT wxSystemButtonsFactory {
+/**
+ * \brief A utility class that provides a single method for constructing 
+ *        platform-specific instances of wxSystemButtonsBase
+ */
+class BFDLLEXPORT wxSystemButtonsFactory final {
 public:
+    /**
+     * \brief Constructs the best wxSystemButtonsBase available for
+     *        current platform.
+     * 
+     * \param frame a borderless frame instance which will be passed to the
+     *              constructor of implementation
+     * \return a pointer to the newly created wxSystemButtonsBase instance. The
+     *         caller takes ownership of the pointer and **must** explicitly free 
+     *         it when it is no longer required. 
+     */
     static wxSystemButtonsBase* CreateSystemButtons(wxBorderlessFrameBase* frame);
 };
 

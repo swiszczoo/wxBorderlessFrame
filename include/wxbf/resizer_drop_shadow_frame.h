@@ -24,21 +24,59 @@
 
 #include "window_gripper.h"
 
+/**
+ * \brief A template class for connecting wxWindowGripper to wxDropShadowFrameBase
+ *        implementation.
+ * 
+ * It is a utility class for the library, not meant to be used by the user.
+ */
 template <class DropShadowImpl>
 class wxResizerDropShadowFrame : public DropShadowImpl
 {
 public:
+    /**
+     * \brief Create a drop shadow frame associated with the provided wxWindowGripper.
+     * 
+     * \param gripper a pointer to instance of wxWindowGripper for this 
+     *                implementation to use. This class will take ownership of it
+     *                and free it when no longer necessary.
+     */
     wxResizerDropShadowFrame(wxWindowGripper* gripper) 
     { 
         Init(); 
         m_gripper = gripper; 
     }
 
+    /**
+     * \brief Destructor.
+     * 
+     * Frees the associated wxWindowGripper instance.
+     */
     ~wxResizerDropShadowFrame()
     {
         delete m_gripper;
     }
 
+    /**
+     * \brief Create a drop shadow frame associated with the provided wxWindowGripper.
+     * 
+     * \param gripper a pointer to instance of wxWindowGripper for this 
+     *                implementation to use. This class will take ownership of it
+     *                and free it when no longer necessary.
+     * \param parent Pointer to a parent window.
+     * \param id Window identifier. If `wxID_ANY`, will automatically create 
+     *           an identifier.
+     * \param part which edge of the window will this frame correspond to 
+     * \param pos Window position. wxDefaultPosition indicates that wxWidgets 
+     *            should generate a default position for the window. If using 
+     *            the `wxWindow` class directly, supply an actual position.
+     * \param size Window size. `wxDefaultSize` indicates that wxWidgets should 
+     *             generate a default size for the window. If no suitable size 
+     *             can be found, the window will be sized to 20x20 pixels so that 
+     *             the window is visible but obviously not correctly sized.
+     * \param style Window style. For generic window styles, please see `wxWindow`.
+     * \param name Window name.
+     */
     wxResizerDropShadowFrame(wxWindowGripper* gripper, wxWindow* parent,
         wxWindowID id,
         wxDropShadowWindowPart part,
@@ -52,6 +90,25 @@ public:
         Create(parent, id, part, pos, size, style, name);
     }
 
+    /**
+     * \brief Creates an actual instance if the default constructor was called
+     *        before.
+     * 
+     * \param parent Pointer to a parent window.
+     * \param id Window identifier. If `wxID_ANY`, will automatically create 
+     *           an identifier.
+     * \param part which edge of the window will this frame correspond to 
+     * \param pos Window position. wxDefaultPosition indicates that wxWidgets 
+     *            should generate a default position for the window. If using 
+     *            the `wxWindow` class directly, supply an actual position.
+     * \param size Window size. `wxDefaultSize` indicates that wxWidgets should 
+     *             generate a default size for the window. If no suitable size 
+     *             can be found, the window will be sized to 20x20 pixels so that 
+     *             the window is visible but obviously not correctly sized.
+     * \param style Window style. For generic window styles, please see `wxWindow`.
+     * \param name Window name.
+     * \return `true` if the creation was successful, `false` otherwise
+     */
     bool Create(wxWindow* parent,
         wxWindowID id,
         wxDropShadowWindowPart part,
@@ -69,6 +126,13 @@ public:
         return true;
     }
 
+    /**
+     * \brief Sets how far from the window corner can the mouse be to still 
+     *        be able to resize the window diagonally.
+     * 
+     * \param radius size of the corner hitbox, in DIP
+     * \return `true` if function succeeded, `false` otherwise
+     */
     bool SetCornerRadius(int radius)
     {
         if (radius <= 0) {
@@ -79,6 +143,13 @@ public:
         return true;
     }
 
+    /**
+     * \brief Gets size of the corner hitbox.
+     * 
+     * For more information, see SetCornerRadius()
+     * 
+     * \return current size of the corner hitbox, in DIP
+     */
     int GetCornerRadius() const { return m_cornerRadius; }
 
 private:
