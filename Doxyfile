@@ -62,6 +62,43 @@ INLINE_SIMPLE_STRUCTS  = NO
 TYPEDEF_HIDES_STRUCT   = NO
 LOOKUP_CACHE_SIZE      = 0
 NUM_PROC_THREADS       = 0
+
+#---------------------------------------------------------------------------
+# Aliases
+#---------------------------------------------------------------------------
+
+# This is the most important part of the wxWidgets Doxyfile. Aliases allow
+# us to keep the headers readable and "implement" wxWidgets-specific commands.
+
+# Aliases for documenting C++ classes
+#---------------------------------------------------------------------------
+
+# aliases to be used by classes which emit wxEvents (e.g. wxWindow, wxTextCtrl, etc):
+ALIASES = beginEventEmissionTable="^^<h2>Events emitted by this class</h2><p>Event macros for events emitted by this class:</p><div>"
+ALIASES += beginEventEmissionTable{1}="^^<h2>Events emitted by this class</h2><p>The following event handler macros redirect the events to member function handlers '<b>func</b>' with prototypes like: <div class='eventHandler'><span style='background-color:#eeeeee;padding:5px;font-family:monospace,fixed'>void&nbsp;handlerFuncName(\1&&nbsp;event)</span></div></p>Event macros for events emitted by this class:<div>"
+ALIASES += beginEventEmissionTable{2}="^^<h2>Events emitted by this class</h2><p>The following event handler macros redirect the events to member function handlers '<b>func</b>' with prototypes like: <div class='eventHandler'><span style='background-color:#eeeeee;padding:5px;font-family:monospace,fixed'>void&nbsp;handlerFuncName(\1&&nbsp;event)</span> or <span style='background-color:#eeeeee;padding:5px;font-family:monospace,fixed'>void&nbsp;handlerFuncName(\2&&nbsp;event)</span></div></p>Event macros for events emitted by this class:<div>"
+
+# common event aliases:
+ALIASES += event{1}="</div>\li <span class='event'>\1</span>:<div class='eventDesc'>"
+ALIASES += event{2}="</div>\li <span class='event'>\1, \2</span>:<div class='eventDesc'>"
+ALIASES += event{3}="</div>\li <span class='event'>\1, \2, \3</span>:<div class='eventDesc'>"
+ALIASES += event{4}="</div>\li <span class='event'>\1, \2, \3, \4</span>:<div class='eventDesc'>"
+ALIASES += endEventTable="</div>^^"
+
+# style aliases
+ALIASES += beginStyleTable="^^<h2>Styles</h2><p>This class supports the following styles:</p><div>"
+ALIASES += style{1}="</div>\li <span class='style'>\1</span>:<div class='styleDesc'>"
+ALIASES += endStyleTable="</div>^^"
+
+# extra style aliases
+ALIASES += beginExtraStyleTable="^^<hr><h2>Extra Styles</h2><p>This class supports the following extra styles:</p><div>"
+ALIASES += endExtraStyleTable="</div>^^"
+
+# flag aliases
+ALIASES += beginFlagTable="<div>"
+ALIASES += flag{1}="</div>\li <span class='flag'>\1</span>:<div class='flagDesc'>"
+ALIASES += endFlagTable="</div>^^"
+
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------

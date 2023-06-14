@@ -114,7 +114,7 @@ public:
         WXWPARAM wParam,
         WXLPARAM lParam) wxOVERRIDE;
 
-    virtual void RunSystemCommand(wxSystemCommand command) wxOVERRIDE;
+    virtual void ExecSystemCommand(wxSystemCommand command) wxOVERRIDE;
 
     void SetWindowStyleFlag(long style) wxOVERRIDE;
 

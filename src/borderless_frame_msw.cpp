@@ -203,7 +203,7 @@ wxWindowPart wxBorderlessFrameMSW::GetWindowPart(wxPoint mousePosition) const
     return wxWP_CLIENT_AREA;
 }
 
-void wxBorderlessFrameMSW::RunSystemCommand(wxSystemCommand command)
+void wxBorderlessFrameMSW::ExecSystemCommand(wxSystemCommand command)
 {
     switch (command) {
     case wxSC_MINIMIZE:
