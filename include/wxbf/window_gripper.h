@@ -23,8 +23,8 @@
 #endif
 
 /**
- * \brief This abstract class defines a platform-independent interface for peforming
- * move and resize operations on the window.
+ * \brief This abstract class defines a platform-independent interface for 
+ *        performing move and resize operations on the window.
  * 
  * It contains a static factory method to enable creating its platform-specific
  * instances in a simple way.

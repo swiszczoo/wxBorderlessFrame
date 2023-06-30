@@ -220,7 +220,7 @@ private:
             return wxBOTTOM;
         case wxSHADOW_LEFT:
             if (cursor == wxCURSOR_SIZENWSE) return static_cast<wxDirection>(wxTOP | wxLEFT);
-            if (cursor == wxCURSOR_SIZENESW) return static_cast<wxDirection>(wxBOTTOM | wxRIGHT);
+            if (cursor == wxCURSOR_SIZENESW) return static_cast<wxDirection>(wxBOTTOM | wxLEFT);
             return wxLEFT;
         case wxSHADOW_RIGHT:
             if (cursor == wxCURSOR_SIZENESW) return static_cast<wxDirection>(wxTOP | wxRIGHT);
