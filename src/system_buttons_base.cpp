@@ -129,7 +129,7 @@ void wxSystemButtonsBase::OnMouse(wxMouseEvent& evnt)
         for (size_t i = 0; i < 4; ++i) {
             if (m_buttonState[i] == wxSB_STATE_PRESSED) {
                 m_owner->ReleaseMouse();
-                m_owner->RunSystemCommand(static_cast<wxSystemCommand>(i));
+                m_owner->ExecSystemCommand(static_cast<wxSystemCommand>(i));
                 break;
             }
         }
@@ -293,6 +293,8 @@ void wxSystemButtonsBase::UpdateDisabledActiveState()
 
 void wxSystemButtonsBase::Layout()
 {
+    UpdateDisabledActiveState();
+
     wxSize ownerSize = m_owner->GetClientSize();
     long ownerState = m_owner->GetWindowStyle();
     bool ownerMaximized = m_owner->IsMaximized();
@@ -302,6 +304,7 @@ void wxSystemButtonsBase::Layout()
     m_buttonVisible[wxSB_MAXIMIZE] = (ownerState & (wxMINIMIZE_BOX | wxMAXIMIZE_BOX)) && !ownerMaximized;
     m_buttonVisible[wxSB_RESTORE] = (ownerState & (wxMINIMIZE_BOX | wxMAXIMIZE_BOX)) && ownerMaximized;
     m_buttonVisible[wxSB_CLOSE] = ownerState & (wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxCLOSE_BOX);
+
 
     if (AreButtonsRightAligned()) {
         wxCoord x = ownerSize.x;
