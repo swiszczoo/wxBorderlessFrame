@@ -240,17 +240,41 @@ void wxBorderlessFrameMSW::UpdateNcArea()
 
 void wxBorderlessFrameMSW::UpdateSystemMenu(::HMENU sysMenu)
 {
-#define ITEM_STATE(pred) (pred) ? MF_ENABLED : MFS_GRAYED
+    MENUITEMINFO mii;
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_STATE;
+    mii.fType = 0;
 
-    bool maximized = IsMaximized();
-    long styles = GetWindowStyle();
+    // update the options
+    mii.fState = MF_ENABLED;
+    SetMenuItemInfo(sysMenu, SC_RESTORE, FALSE, &mii);
+    SetMenuItemInfo(sysMenu, SC_SIZE, FALSE, &mii);
+    SetMenuItemInfo(sysMenu, SC_MOVE, FALSE, &mii);
+    SetMenuItemInfo(sysMenu, SC_MAXIMIZE, FALSE, &mii);
+    SetMenuItemInfo(sysMenu, SC_MINIMIZE, FALSE, &mii);
 
-    ::EnableMenuItem(sysMenu, SC_RESTORE, ITEM_STATE(maximized && (styles & wxMAXIMIZE_BOX)));
-    ::EnableMenuItem(sysMenu, SC_MOVE, ITEM_STATE(!maximized));
-    ::EnableMenuItem(sysMenu, SC_SIZE, ITEM_STATE(!maximized && (styles & wxRESIZE_BORDER)));
-    ::EnableMenuItem(sysMenu, SC_MINIMIZE, ITEM_STATE(styles & wxMINIMIZE_BOX));
-    ::EnableMenuItem(sysMenu, SC_MAXIMIZE, ITEM_STATE(!maximized && (styles & wxMAXIMIZE_BOX)));
-    ::EnableMenuItem(sysMenu, SC_CLOSE, ITEM_STATE(styles & wxCLOSE_BOX));
+    mii.fState = MF_GRAYED;
+
+    WINDOWPLACEMENT wp;
+    GetWindowPlacement(GetHWND(), &wp);
+
+    switch (wp.showCmd)
+    {
+    case SW_SHOWMAXIMIZED:
+        SetMenuItemInfo(sysMenu, SC_SIZE, FALSE, &mii);
+        SetMenuItemInfo(sysMenu, SC_MOVE, FALSE, &mii);
+        SetMenuItemInfo(sysMenu, SC_MAXIMIZE, FALSE, &mii);
+        SetMenuDefaultItem(sysMenu, SC_CLOSE, FALSE);
+        break;
+    case SW_SHOWMINIMIZED:
+        SetMenuItemInfo(sysMenu, SC_MINIMIZE, FALSE, &mii);
+        SetMenuDefaultItem(sysMenu, SC_RESTORE, FALSE);
+        break;
+    case SW_SHOWNORMAL:
+        SetMenuItemInfo(sysMenu, SC_RESTORE, FALSE, &mii);
+        SetMenuDefaultItem(sysMenu, SC_CLOSE, FALSE);
+        break;
+    }
 }
 
 void wxBorderlessFrameMSW::AdjustMaximizedClientRect(::HWND window, RECT& rect)

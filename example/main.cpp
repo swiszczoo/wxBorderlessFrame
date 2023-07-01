@@ -18,6 +18,7 @@
 #endif
 
 #include <wx/clrpicker.h>
+#include <wx/dynlib.h>
 #include <wx/spinctrl.h>
 
 #include <wxbf/borderless_frame.h>
@@ -92,7 +93,13 @@ wxIMPLEMENT_APP(MyApp);
 bool MyApp::OnInit()
 {
 #if (defined _WIN32 && WINVER >= 0x0605)
-    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    typedef BOOL(WINAPI* PGNSI)(DPI_AWARENESS_CONTEXT);
+
+    wxDynamicLibrary dll("user32.dll");
+    PGNSI spdac = (PGNSI)dll.GetSymbol("SetProcessDpiAwarenessContext");
+    if (spdac) {
+        spdac(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    }
 #endif
     wxInitAllImageHandlers();
 
