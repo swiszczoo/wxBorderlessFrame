@@ -33,6 +33,11 @@ class BFDLLEXPORT wxWindowGripper
 {
 public:
     /**
+     * \brief Virtual destructor.
+     */
+    virtual ~wxWindowGripper() {};
+
+    /**
      * \brief Starts to move the given window, as when the user clicks 
      *        and drags on its titlebar.
      * 

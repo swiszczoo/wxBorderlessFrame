@@ -17,14 +17,19 @@
 #ifndef _WXBF_BORDERLESS_FRAME_H_
 #define _WXBF_BORDERLESS_FRAME_H_
 
-#ifdef _WIN32
+#if defined(_WIN32)
 
 #include "borderless_frame_msw.h"
 typedef wxBorderlessFrameMSW wxBorderlessFrame;
 
+#elif defined(__WXGTK__)
+
+#include "borderless_frame_gtk.h"
+typedef wxBorderlessFrameGTK wxBorderlessFrame;
+
 #else
 
-#error "This implementation is currently only available for MSW"
+#error "This implementation is currently only available for MSW and GTK"
 
 #endif
 

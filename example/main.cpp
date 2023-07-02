@@ -25,6 +25,8 @@
 #include <wxbf/system_buttons.h>
 #include <wxbf/window_gripper_msw.h>
 
+#include <memory>
+
 class MyApp : public wxApp
 {
 public:
@@ -236,24 +238,19 @@ void MyFrame::SetupGui()
 
     wxStaticBoxSizer* borderSizer = new wxStaticBoxSizer(wxVERTICAL, this, "Border and shadow");
     m_spinBorderSize = new wxSpinCtrl(this);
-    m_spinBorderSize->SetMin(0);
-    m_spinBorderSize->SetMax(10);
+    m_spinBorderSize->SetRange(0, 10);
     m_spinBorderSize->SetValue(GetBorderThickness());
     m_spinShadowSize = new wxSpinCtrl(this);
-    m_spinShadowSize->SetMin(0);
-    m_spinShadowSize->SetMax(50);
+    m_spinShadowSize->SetRange(0, 50);
     m_spinShadowSize->SetValue(GetShadowSize());
     m_spinShadowAlpha = new wxSpinCtrl(this);
-    m_spinShadowAlpha->SetMin(0);
-    m_spinShadowAlpha->SetMax(255);
+    m_spinShadowAlpha->SetRange(0, 255);
     m_spinShadowAlpha->SetValue(GetShadowAlpha());
     m_spinShadowX = new wxSpinCtrl(this);
-    m_spinShadowX->SetMin(-16);
-    m_spinShadowX->SetMax(16);
+    m_spinShadowX->SetRange(-16, 16);
     m_spinShadowX->SetValue(GetShadowOffset().x);
     m_spinShadowY = new wxSpinCtrl(this);
-    m_spinShadowY->SetMin(-16);
-    m_spinShadowY->SetMax(16);
+    m_spinShadowY->SetRange(-16, 16);
     m_spinShadowY->SetValue(GetShadowOffset().y);
     m_colBorder = new wxColourPickerCtrl(this, wxID_ANY, GetBorderColour());
     m_chkShadowOnInactive = new wxCheckBox(this, wxID_ANY, "No shadow if inactive");
@@ -375,7 +372,9 @@ void MyFrame::OnNcMouse(wxMouseEvent& event)
     else if (event.GetEventType() == wxEVT_NC_RIGHT_UP || event.RightUp()) {
         wxWindowPart part = GetWindowPart(wxGetMousePosition());
         bool hasCapture = HasCapture();
-        ReleaseCapture();
+        if (hasCapture) {
+            ReleaseMouse();
+        }
 
         if (part == wxWP_TITLEBAR && hasCapture) {
             PopupSystemMenu();

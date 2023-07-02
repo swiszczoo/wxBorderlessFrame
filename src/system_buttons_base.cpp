@@ -42,6 +42,9 @@ wxSystemButtonsBase::wxSystemButtonsBase(wxBorderlessFrameBase* frame)
     frame->Bind(wxEVT_ACTIVATE, &wxSystemButtonsBase::OnActivate, this);
     frame->Bind(wxEVT_MAXIMIZE, &wxSystemButtonsBase::OnMaximize, this);
     frame->Bind(wxEVT_PAINT, &wxSystemButtonsBase::OnPaint, this);
+#ifdef __WXGTK__
+    frame->Bind(wxEVT_LEAVE_WINDOW, &wxSystemButtonsBase::OnMouse, this);
+#endif
 }
 
 wxSystemButtonsBase::~wxSystemButtonsBase()
@@ -118,7 +121,9 @@ void wxSystemButtonsBase::OnMouse(wxMouseEvent& evnt)
 {
     wxPoint pos = evnt.GetPosition();
 
-    if (evnt.GetEventType() == wxEVT_NC_LEAVE && !m_owner->HasCapture()) {
+    if ((evnt.GetEventType() == wxEVT_LEAVE_WINDOW || evnt.GetEventType() == wxEVT_NC_LEAVE)
+        && !m_owner->HasCapture()) {
+            
         pos = wxPoint(-100, -100);
     }
 
@@ -145,7 +150,7 @@ void wxSystemButtonsBase::OnMouse(wxMouseEvent& evnt)
         }
     }
 
-    if (evnt.GetEventType() == wxEVT_NC_LEFT_DOWN) {
+    if (evnt.GetEventType() == wxEVT_LEFT_DOWN || evnt.GetEventType() == wxEVT_NC_LEFT_DOWN) {
         for (size_t i = 0; i < 4; ++i) {
             if (m_buttonState[i] == wxSB_STATE_DISABLED) {
                 continue;

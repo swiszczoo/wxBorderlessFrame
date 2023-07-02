@@ -9,14 +9,18 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <wxbf/window_gripper.h>
-#ifdef _WIN32
+#if defined(_WIN32)
 #include <wxbf/window_gripper_msw.h>
+#elif defined(__WXGTK__)
+#include <wxbf/window_gripper_gtk.h>
 #endif
 
 wxWindowGripper* wxWindowGripper::Create()
 {
-#ifdef _WIN32
+#if defined(_WIN32)
     return new wxWindowGripperMSW();
+#elif defined(__WXGTK__)
+    return new wxWindowGripperGTK();
 #endif
 
     wxLogError("Could not find implementation of wxWindowGripper for this platform");
