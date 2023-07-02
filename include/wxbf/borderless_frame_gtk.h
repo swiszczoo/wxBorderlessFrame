@@ -25,6 +25,8 @@
 #include "borderless_frame_common.h"
 #include "window_gripper.h"
 
+struct _GtkCssProvider;
+
 /**
  * \brief A platform specific implementation of wxBorderlessFrameBase for GTK.
  * 
@@ -73,7 +75,7 @@ public:
         const wxString& name = wxASCII_STR(wxFrameNameStr));
 
     /**
-     * \brief Destructor.
+     * \brief Virtual destructor.
      */
     ~wxBorderlessFrameGTK();
 
@@ -100,6 +102,7 @@ public:
     void SetBorderColour(wxColour borderColour)
     {
         m_borderColour = borderColour;
+        UpdateDecorationCss();
     }
 
     /**
@@ -119,6 +122,7 @@ public:
         wxASSERT_MSG(thicknessPx >= 0, "thicknessPx must be non-negative");
 
         m_borderThickness = thicknessPx;
+        UpdateDecorationCss();
     }
 
     /**
@@ -138,8 +142,7 @@ public:
      */
     wxByte GetShadowAlpha() const
     {
-        //return m_shadow[0]->GetShadowAlpha();
-        return 168;
+        return m_shadowAlpha;
     }
 
     /**
@@ -153,7 +156,8 @@ public:
      */
     void SetShadowAlpha(wxByte newAlpha)
     {
-        //for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetShadowAlpha(newAlpha);
+        m_shadowAlpha = newAlpha;
+        UpdateDecorationCss();
     }
 
     /**
@@ -163,8 +167,7 @@ public:
      */
     int GetShadowSize() const
     {
-        //return m_shadow[0]->GetShadowSize();
-        return 0;
+        return m_shadowSize;
     }
 
     /**
@@ -178,7 +181,8 @@ public:
      */
     void SetShadowSize(int shadowSize)
     {
-        //for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetShadowSize(shadowSize);
+        m_shadowSize = shadowSize;
+        UpdateDecorationCss();
     }
 
     /**
@@ -188,8 +192,7 @@ public:
      */
     wxPoint GetShadowOffset() const
     {
-        //return m_shadow[0]->GetShadowOffset();
-        return wxPoint(0, 0);
+        return m_shadowOffset;
     }
 
     /**
@@ -203,7 +206,8 @@ public:
      */
     void SetShadowOffset(wxPoint newOffset)
     {
-        //for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetShadowOffset(newOffset);
+        m_shadowOffset = newOffset;
+        UpdateDecorationCss();
     }
 
     /**
@@ -214,8 +218,7 @@ public:
      */
     bool IsShadowDisabledOnInactiveWindow() const
     {
-        //return m_shadow[0]->IsDisableShadowOnInactiveWindow();
-        return false;
+        return m_disableShadowOnInactive;
     }
 
     /**
@@ -229,7 +232,8 @@ public:
      */
     void SetShadowDisabledOnInactiveWindow(bool disable)
     {
-        //for (size_t i = 0; i < 4; ++i) m_shadow[i]->SetDisableShadowOnInactiveWindow(disable);
+        m_disableShadowOnInactive = disable;
+        UpdateDecorationCss();
     }
 
     /**
@@ -263,6 +267,8 @@ public:
      */
     void SetWindowStyleFlag(long style) wxOVERRIDE;
 
+
+
 protected:
     /**
      * \brief Returns, which window parent is the mouse currently hovering over.
@@ -281,8 +287,15 @@ private:
     wxColour m_borderColour;
     int m_borderThickness;
     wxWindowGripper* m_gripper;
+    _GtkCssProvider* m_cssProvider;
+
+    int m_shadowSize;
+    wxPoint m_shadowOffset;
+    wxByte m_shadowAlpha;
+    bool m_disableShadowOnInactive;
 
     void Init();
+    void UpdateDecorationCss();
 
     void OnMouse(wxMouseEvent& evnt);
 };

@@ -231,7 +231,11 @@ void wxDropShadowFrameBase::RedrawShadow()
     wxSize size = GetSize();
     if (!m_bmp.IsOk() || m_bmp.GetSize() != size)
     {
+#ifdef _WIN32
         m_bmp = wxBitmap(size.x, size.y, windc);
+#else
+        m_bmp = wxBitmap(size.x, size.y, wxAlphaPixelFormat::BitsPerPixel);
+#endif
     }
 
     {

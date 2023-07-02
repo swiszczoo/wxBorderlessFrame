@@ -74,6 +74,11 @@ public:
         const wxString& name = wxASCII_STR(wxFrameNameStr));
 
     /**
+     * \brief Virtual destructor.
+     */
+    virtual ~wxBorderlessFrameMSW();
+
+    /**
      * \brief Creates the borderless window, only use after calling the default
      *        constructor.
      * 

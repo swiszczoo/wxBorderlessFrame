@@ -9,6 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
+
 #include <wxbf/drop_shadow_frame_msw.h>
 
 #include <wx/msw/private/winstyle.h>

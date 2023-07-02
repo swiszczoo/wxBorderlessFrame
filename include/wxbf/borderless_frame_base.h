@@ -83,6 +83,11 @@ public:
     using wxFrame::wxFrame;
 
     /**
+     * \brief Virtual destructor.
+     */
+    virtual ~wxBorderlessFrameBase() {}
+
+    /**
      * \brief Executes the provided system command.
      * 
      * \param command the command to execute

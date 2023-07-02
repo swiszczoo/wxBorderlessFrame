@@ -23,6 +23,7 @@ set(LIB_SOURCES
     src/borderless_frame_gtk.cpp
     src/borderless_frame_msw.cpp
     src/drop_shadow_frame_base.cpp
+    src/drop_shadow_frame_gtk.cpp
     src/drop_shadow_frame_msw.cpp
     src/system_buttons_base.cpp
     src/system_buttons_fallback.cpp

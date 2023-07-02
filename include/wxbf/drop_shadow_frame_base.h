@@ -21,6 +21,8 @@
 #include <wx/wx.h>
 #endif
 
+#include <wx/popupwin.h>
+
 #include "borderless_frame_common.h"
 
 #include <chrono>
@@ -301,6 +303,16 @@ protected:
      * \brief Initializes class instance.
      */
     void Init();
+
+    /**
+     * \brief Retrieves current shadow bitmap
+     * 
+     * \return Current shadow bitmap.
+     */
+    wxBitmap& GetShadowBitmap() 
+    {
+        return m_bmp;
+    }
 
 private:
     static const double FADE_IN_TIME_MS;

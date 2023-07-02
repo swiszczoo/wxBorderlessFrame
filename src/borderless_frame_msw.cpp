@@ -66,6 +66,13 @@ bool wxBorderlessFrameMSW::Create(wxWindow* parent,
     return true;
 }
 
+wxBorderlessFrame::~wxBorderlessFrame()
+{
+    for (int i = 0; i < 4; i++) {
+        delete m_shadow[i];
+    }
+}
+
 void wxBorderlessFrameMSW::PopupSystemMenu()
 {
     ::HMENU hSysMenu = GetSystemMenu(GetHWND(), FALSE);
@@ -196,6 +203,10 @@ void wxBorderlessFrameMSW::Init()
     m_borderThickness = 1;
     m_borderColour = *wxRED;
     m_maximizedTheme = true;
+
+    for (int i = 0; i < 4; i++) {
+        m_shadow[i] = nullptr;
+    }
 }
 
 wxWindowPart wxBorderlessFrameMSW::GetWindowPart(wxPoint mousePosition) const

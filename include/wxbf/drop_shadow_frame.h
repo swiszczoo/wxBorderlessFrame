@@ -17,10 +17,15 @@
 #ifndef _WXBF_DROP_SHADOW_FRAME_H_
 #define _WXBF_DROP_SHADOW_FRAME_H_
 
-#ifdef _WIN32
+#if defined(_WIN32)
 
 #include "drop_shadow_frame_msw.h"
 typedef wxDropShadowFrameMSW wxDropShadowFrame;
+
+#elif defined(__WXGTK__)
+
+#include "drop_shadow_frame_gtk.h"
+typedef wxDropShadowFrameGTK wxDropShadowFrame;
 
 #else
 

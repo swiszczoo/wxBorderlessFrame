@@ -150,7 +150,7 @@ void wxSystemButtonsBase::OnMouse(wxMouseEvent& evnt)
         }
     }
 
-    if (evnt.GetEventType() == wxEVT_LEFT_DOWN || evnt.GetEventType() == wxEVT_NC_LEFT_DOWN) {
+    if (evnt.GetEventType() == wxEVT_NC_LEFT_DOWN) {
         for (size_t i = 0; i < 4; ++i) {
             if (m_buttonState[i] == wxSB_STATE_DISABLED) {
                 continue;

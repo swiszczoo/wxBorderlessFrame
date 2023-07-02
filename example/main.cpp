@@ -123,7 +123,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
     CreateStatusBar();
 
-    static const int statusWidths[] = { -1, 150 };
+    static const int statusWidths[] = { -1, 200 };
     GetStatusBar()->SetFieldsCount(2, statusWidths);
 
     SetStatusText("Welcome to wxBorderlessFrame!", 0);

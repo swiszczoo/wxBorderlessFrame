@@ -33,13 +33,17 @@ bool wxBorderlessFrameGTK::Create(wxWindow* parent,
     wxWindowID id, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style, const wxString& name)
 {
-    style |= wxNO_BORDER;
+    //style |= wxNO_BORDER;
 
     if (!wxFrame::Create(parent, id, title, pos, size, style, name)) {
         return false;
     }
 
-    
+    GtkWidget* header = gtk_header_bar_new();
+    gtk_window_set_titlebar(GTK_WINDOW(GetHandle()), header);
+
+    // We need to reset window label after replacing titlebar
+    gtk_header_bar_set_title(GTK_HEADER_BAR(header), title.utf8_str());
 
     Bind(wxEVT_LEFT_DOWN, &wxBorderlessFrameGTK::OnMouse, this);
     Bind(wxEVT_LEFT_UP, &wxBorderlessFrameGTK::OnMouse, this);
@@ -95,6 +99,49 @@ void wxBorderlessFrameGTK::Init()
     m_borderThickness = 1;
     m_borderColour = *wxRED;
     m_gripper = wxWindowGripper::Create();
+
+    m_shadowSize = 10;
+    m_shadowOffset = wxPoint(0, 2);
+    m_shadowAlpha = 168;
+    m_disableShadowOnInactive = true;
+
+    m_cssProvider = gtk_css_provider_new();
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default(), 
+        GTK_STYLE_PROVIDER(m_cssProvider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    UpdateDecorationCss();
+}
+
+void wxBorderlessFrameGTK::UpdateDecorationCss()
+{
+    static const wxString FORMAT_STRING = 
+        "decoration { "
+            "border: %dpx solid %s; "
+            "border-radius: 0; "
+            "box-shadow: %dpx %dpx %fpx rgba(0, 0, 0, %f); "
+        "}";
+
+    static const wxString FORMAT_STRING_NO_INACTIVE = 
+        "decoration { "
+            "border: %dpx solid %s; "
+            "border-radius: 0; "
+            "box-shadow: %dpx %dpx %fpx rgba(0, 0, 0, %f); "
+        "} "
+        ""
+        "decoration:backdrop { "
+            "box-shadow: %3$dpx %4$dpx %5$fpx transparent; "
+        "}";
+
+    wxString formatted = wxString::Format(
+        m_disableShadowOnInactive ? FORMAT_STRING_NO_INACTIVE : FORMAT_STRING,
+        m_borderThickness,
+        m_borderColour.GetAsString(wxC2S_HTML_SYNTAX),
+        m_shadowOffset.x,
+        m_shadowOffset.y,
+        m_shadowSize / 2.f,
+        m_shadowAlpha / 255.f
+    );
+
+    gtk_css_provider_load_from_data(m_cssProvider, formatted.utf8_str(), -1, nullptr);
 }
 
 void wxBorderlessFrameGTK::OnMouse(wxMouseEvent& evnt)
@@ -106,6 +153,8 @@ void wxBorderlessFrameGTK::OnMouse(wxMouseEvent& evnt)
         }
 
         if (part != wxWP_CLIENT_AREA) {
+            evnt.SetEventType(wxEVT_NC_LEFT_DOWN);
+            wxPostEvent(this, evnt);
             return;
         }
     }
@@ -114,6 +163,8 @@ void wxBorderlessFrameGTK::OnMouse(wxMouseEvent& evnt)
         wxWindowPart part = GetWindowPart(ClientToScreen(evnt.GetPosition()));
 
         if (part != wxWP_CLIENT_AREA) {
+            evnt.SetEventType(wxEVT_NC_LEFT_UP);
+            wxPostEvent(this, evnt);
             return;
         }
     }
