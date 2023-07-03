@@ -33,8 +33,6 @@ bool wxBorderlessFrameGTK::Create(wxWindow* parent,
     wxWindowID id, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style, const wxString& name)
 {
-    //style |= wxNO_BORDER;
-
     if (!wxFrame::Create(parent, id, title, pos, size, style, name)) {
         return false;
     }
@@ -57,18 +55,19 @@ void wxBorderlessFrameGTK::PopupSystemMenu()
 {
     GdkWindow* window = gtk_widget_get_window(GetHandle());
     GdkEvent* event = gdk_event_new(GdkEventType::GDK_BUTTON_RELEASE);
-    wxPoint mousePos = wxGetMousePosition();
 
     GdkSeat* seat = gdk_display_get_default_seat(gdk_display_get_default());
     GdkDevice* mouse = gdk_seat_get_pointer(seat);
+    int x, y;
+    gdk_device_get_position(mouse, nullptr, &x, &y);
 
     event->button.window = window;
     event->button.send_event = true;
     event->button.time = GDK_CURRENT_TIME;
     event->button.axes = NULL;
     event->button.button = 3;
-    event->button.x_root = mousePos.x;
-    event->button.y_root = mousePos.y;
+    event->button.x_root = static_cast<gdouble>(x);
+    event->button.y_root = static_cast<gdouble>(y);
     event->button.device = mouse;
     
     gdk_window_show_window_menu(window, event);
@@ -105,7 +104,7 @@ void wxBorderlessFrameGTK::SetWindowStyleFlag(long style)
     long oldStyle = GetWindowStyleFlag();
     static const long MASK = wxMINIMIZE_BOX | wxMAXIMIZE_BOX | wxMAXIMIZE | wxCLOSE_BOX;
 
-    wxFrame::SetWindowStyleFlag(style | wxNO_BORDER);
+    wxFrame::SetWindowStyleFlag(style);
 
     if ((oldStyle & MASK) != (style & MASK)) {
         wxPostEvent(this, wxCommandEvent(wxEVT_UPDATE_SYSTEM_BUTTONS));
