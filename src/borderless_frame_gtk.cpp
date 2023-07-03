@@ -48,12 +48,31 @@ bool wxBorderlessFrameGTK::Create(wxWindow* parent,
     Bind(wxEVT_LEFT_DOWN, &wxBorderlessFrameGTK::OnMouse, this);
     Bind(wxEVT_LEFT_UP, &wxBorderlessFrameGTK::OnMouse, this);
     Bind(wxEVT_LEFT_DCLICK, &wxBorderlessFrameGTK::OnMouse, this);
+    Bind(wxEVT_RIGHT_DOWN, &wxBorderlessFrameGTK::OnMouse, this);
+    Bind(wxEVT_RIGHT_UP, &wxBorderlessFrameGTK::OnMouse, this);
     return true;
 }
 
 void wxBorderlessFrameGTK::PopupSystemMenu()
 {
-    // It appears we need to emulate this menu
+    GdkWindow* window = gtk_widget_get_window(GetHandle());
+    GdkEvent* event = gdk_event_new(GdkEventType::GDK_BUTTON_RELEASE);
+    wxPoint mousePos = wxGetMousePosition();
+
+    GdkSeat* seat = gdk_display_get_default_seat(gdk_display_get_default());
+    GdkDevice* mouse = gdk_seat_get_pointer(seat);
+
+    event->button.window = window;
+    event->button.send_event = true;
+    event->button.time = GDK_CURRENT_TIME;
+    event->button.axes = NULL;
+    event->button.button = 3;
+    event->button.x_root = mousePos.x;
+    event->button.y_root = mousePos.y;
+    event->button.device = mouse;
+    
+    gdk_window_show_window_menu(window, event);
+    gdk_event_free(event);
 }
 
 wxWindowPart wxBorderlessFrameGTK::GetWindowPart(wxPoint mousePosition) const
@@ -172,6 +191,22 @@ void wxBorderlessFrameGTK::OnMouse(wxMouseEvent& evnt)
     if (evnt.GetEventType() == wxEVT_LEFT_DCLICK) {
         if (GetWindowPart(ClientToScreen(evnt.GetPosition())) == wxWP_TITLEBAR) {
             ExecSystemCommand(IsMaximized() ? wxSC_RESTORE : wxSC_MAXIMIZE);
+            return;
+        }
+    }
+
+    if (evnt.GetEventType() == wxEVT_RIGHT_DOWN) {
+        if (GetWindowPart(ClientToScreen(evnt.GetPosition())) != wxWP_CLIENT_AREA) {
+            evnt.SetEventType(wxEVT_NC_RIGHT_DOWN);
+            wxPostEvent(this, evnt);
+            return;
+        }
+    }
+
+    if (evnt.GetEventType() == wxEVT_RIGHT_UP) {
+        if (GetWindowPart(ClientToScreen(evnt.GetPosition())) != wxWP_CLIENT_AREA) {
+            evnt.SetEventType(wxEVT_NC_RIGHT_UP);
+            wxPostEvent(this, evnt);
             return;
         }
     }
