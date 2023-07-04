@@ -106,7 +106,7 @@ bool MyApp::OnInit()
     wxInitAllImageHandlers();
 
     MyFrame* frame = new MyFrame("wxBorderlessFrame demo", wxPoint(50, 50), wxSize(640, 480));
-    //frame->SetDoubleBuffered(true);
+    frame->SetDoubleBuffered(true);
     frame->Show(true);
     return true;
 }

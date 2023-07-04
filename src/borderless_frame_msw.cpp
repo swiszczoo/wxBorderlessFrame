@@ -66,7 +66,7 @@ bool wxBorderlessFrameMSW::Create(wxWindow* parent,
     return true;
 }
 
-wxBorderlessFrame::~wxBorderlessFrame()
+wxBorderlessFrameMSW::~wxBorderlessFrameMSW()
 {
     for (int i = 0; i < 4; i++) {
         delete m_shadow[i];

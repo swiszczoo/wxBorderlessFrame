@@ -152,6 +152,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\wxbf\borderless_frame_base.h" />
+    <ClInclude Include="include\wxbf\borderless_frame_gtk.h" />
+    <ClInclude Include="include\wxbf\drop_shadow_frame_gtk.h" />
     <ClInclude Include="include\wxbf\system_buttons.h" />
     <ClInclude Include="include\wxbf\system_buttons_base.h" />
     <ClInclude Include="include\wxbf\borderless_frame.h" />
@@ -164,13 +166,16 @@
     <ClInclude Include="include\wxbf\system_buttons_fallback.h" />
     <ClInclude Include="include\wxbf\system_buttons_win10.h" />
     <ClInclude Include="include\wxbf\window_gripper.h" />
+    <ClInclude Include="include\wxbf\window_gripper_gtk.h" />
     <ClInclude Include="include\wxbf\window_gripper_msw.h" />
     <ClInclude Include="src\system_menu_png.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\borderless_frame_base.cpp" />
+    <ClCompile Include="src\borderless_frame_gtk.cpp" />
     <ClCompile Include="src\borderless_frame_msw.cpp" />
     <ClCompile Include="src\drop_shadow_frame_base.cpp" />
+    <ClCompile Include="src\drop_shadow_frame_gtk.cpp" />
     <ClCompile Include="src\drop_shadow_frame_msw.cpp" />
     <ClCompile Include="src\system_buttons.cpp" />
     <ClCompile Include="src\system_buttons_base.cpp" />
@@ -178,6 +183,7 @@
     <ClCompile Include="src\system_buttons_win10.cpp" />
     <ClCompile Include="src\system_menu_png.cpp" />
     <ClCompile Include="src\window_gripper.cpp" />
+    <ClCompile Include="src\window_gripper_gtk.cpp" />
     <ClCompile Include="src\window_gripper_msw.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
