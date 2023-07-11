@@ -4,6 +4,7 @@
 
 ![Windows 10 screenshot](doc/screenshots/win10.png)
 ![Windows 7 screenshot](doc/screenshots/win7.png)
+![GTK screenshot](doc/screenshots/gtk.png)
 
 ## Approach
 
