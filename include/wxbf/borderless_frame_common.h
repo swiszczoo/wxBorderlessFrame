@@ -16,7 +16,7 @@
 #ifndef _WXBF_BORDERLESS_FRAME_COMMON_H_
 #define _WXBF_BORDERLESS_FRAME_COMMON_H_
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && defined(BFRAME_SHARED_LIBRARY)
 #ifdef BFRAME_DLL_EXPORT
 #define BFDLLEXPORT __declspec(dllexport)
 #else

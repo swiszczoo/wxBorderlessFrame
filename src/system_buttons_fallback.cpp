@@ -82,9 +82,9 @@ void wxFallbackSystemButtons::TintButtonBitmap(wxBitmap& out,
     for (size_t y = 0; y < BITMAP_DIMENSION; ++y) {
         for (size_t x = 0; x < BITMAP_DIMENSION; ++x) {
             outAlpha[y * BITMAP_DIMENSION + x] = inData[(y * inWidth + (inOffset + x)) * 3];
-            outData[(y * BITMAP_DIMENSION + x) * 3 + 0] = foregroundColour.GetRed();
-            outData[(y * BITMAP_DIMENSION + x) * 3 + 1] = foregroundColour.GetGreen();
-            outData[(y * BITMAP_DIMENSION + x) * 3 + 2] = foregroundColour.GetBlue();
+            outData[(y * BITMAP_DIMENSION + x) * 3 + 0] = foregroundColour.Red();
+            outData[(y * BITMAP_DIMENSION + x) * 3 + 1] = foregroundColour.Green();
+            outData[(y * BITMAP_DIMENSION + x) * 3 + 2] = foregroundColour.Blue();
         }
     }
 

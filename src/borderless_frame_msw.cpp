@@ -201,7 +201,7 @@ void wxBorderlessFrameMSW::Init()
 {
     wxFrame::Init();
     m_borderThickness = 1;
-    m_borderColour = *wxRED;
+    m_borderColour = wxColour(168, 168, 168);
     m_maximizedTheme = true;
 
     for (int i = 0; i < 4; i++) {

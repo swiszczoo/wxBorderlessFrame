@@ -115,7 +115,7 @@ void wxBorderlessFrameGTK::Init()
 {
     //wxFrame::Init(); // we can't call it here because it's private O_O
     m_borderThickness = 1;
-    m_borderColour = *wxRED;
+    m_borderColour = wxColour(168, 168, 168);
     m_gripper = wxWindowGripper::Create();
 
     m_shadowSize = 10;
