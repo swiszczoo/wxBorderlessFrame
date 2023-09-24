@@ -441,4 +441,3 @@ void wxBorderlessFrameMSW::TrackNcLeave()
 }
 
 #endif
-;
